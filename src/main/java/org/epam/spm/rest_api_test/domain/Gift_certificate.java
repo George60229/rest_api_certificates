@@ -1,9 +1,9 @@
 package org.epam.spm.rest_api_test.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "certificates")
@@ -16,7 +16,9 @@ public class Gift_certificate {
     private String description;
     private int price;
     private int duration;
-    private Date create_date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-mm-dd")
+    private LocalDateTime create_date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-mm-dd")
     private LocalDateTime last_update_date;
 
     public Integer getId() {
@@ -59,11 +61,11 @@ public class Gift_certificate {
         this.duration = duration;
     }
 
-    public Date getCreate_date() {
+    public LocalDateTime getCreate_date() {
         return create_date;
     }
 
-    public void setCreate_date(Date create_date) {
+    public void setCreate_date(LocalDateTime create_date) {
         this.create_date = create_date;
     }
 
