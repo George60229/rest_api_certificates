@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "certificates")
@@ -11,22 +14,26 @@ public class Gift_certificate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Integer id;
+    private Integer certificate_id;
+
     private String name;
     private String description;
     private int price;
     private int duration;
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-mm-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-mm-dd")
     private LocalDateTime create_date;
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-mm-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-mm-dd")
     private LocalDateTime last_update_date;
 
+
+
+
     public Integer getId() {
-        return id;
+        return certificate_id;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.certificate_id = id;
     }
 
     public String getName() {

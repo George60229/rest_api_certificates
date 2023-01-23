@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CertificateRepository extends JpaRepository<Gift_certificate, Integer> {
-
+// todo spring jdbc and creating tables by own
+    //todo clear spring
 }

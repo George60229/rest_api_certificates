@@ -22,6 +22,7 @@ public class CertificateController {
     @ResponseStatus(HttpStatus.CREATED)
     public Gift_certificate createCertificate(@RequestBody Gift_certificate certificate) {
         return certificateServiceBean.create(certificate);
+        //todo dto
     }
 
     @GetMapping("/certificate")
