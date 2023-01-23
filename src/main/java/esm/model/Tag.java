@@ -1,21 +1,16 @@
-package org.epam.spm.rest_api_test.domain;
+package esm.model;
 
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 @Table(name = "tages")
 public class Tag {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer tag_id;
-
     private String name;
 
-
-    public Integer getId() {
+    public int getId() {
         return tag_id;
     }
 
@@ -30,4 +25,5 @@ public class Tag {
     public void setName(String name) {
         this.name = name;
     }
+
 }

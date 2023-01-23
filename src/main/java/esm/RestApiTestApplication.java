@@ -1,4 +1,4 @@
-package org.epam.spm.rest_api_test;
+package esm;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
