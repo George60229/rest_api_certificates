@@ -1,6 +1,7 @@
 package esm.dto.request;
 
 
+import esm.model.Tag;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
@@ -15,7 +16,7 @@ public class CertificateRequestDTO {
     private BigDecimal price;
     private int duration;
 
-    private List<String> tags = new ArrayList<>();
+    private List<Tag> tags = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -49,11 +50,11 @@ public class CertificateRequestDTO {
         this.duration = duration;
     }
 
-    public List<String> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 }

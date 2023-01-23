@@ -5,6 +5,7 @@ import esm.dto.request.CertificateEditDto;
 import esm.dto.request.CertificateRequestDTO;
 import esm.dto.response.ResponseCertificateDTO;
 import esm.model.GiftCertificate;
+import esm.model.Tag;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -61,7 +62,6 @@ public class CertificateConverter {
             case DESCRIPTION -> giftCertificate.setDescription(value);
             case PRICE -> giftCertificate.setPrice(BigDecimal.valueOf(Integer.parseInt(value)));
             case DURATION -> giftCertificate.setDuration(Integer.parseInt(value));
-            case TAGS -> giftCertificate.addTag(value);
         }
         return giftCertificate;
     }

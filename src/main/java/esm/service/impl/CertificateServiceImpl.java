@@ -66,6 +66,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public ResponseCertificateDTO editCertificate(CertificateRequestDTO certificateEditDto, int id) {
         Optional<GiftCertificate> giftCertificate = certificateRepository.findById(id);
+
         if (giftCertificate.isEmpty()) {
             throw new AppNotFoundException("Certificate with this id is not exist"+id,ErrorCode.TAG_NOT_FOUND);
         }

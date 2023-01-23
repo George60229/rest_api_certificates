@@ -20,7 +20,12 @@ public class GiftCertificate {
     private int duration;
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
-    private List<String> tags=new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "certificates_tags",
+            joinColumns = {@JoinColumn(name = "certificate_id")},
+            inverseJoinColumns = {@JoinColumn(name = "tag_id")})
+    private List<Tag> tags;
     //todo
 
     public Integer getId() {
@@ -79,21 +84,21 @@ public class GiftCertificate {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public List<String> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 
-    public void setTag(String tagName) {
-        this.tags.add(tagName);
+    public void setTag(Tag tag) {
+        this.tags.add(tag);
     }
 
-    public void addTag(String tagName) {
-        if (!tags.contains(tagName)) {
-            this.tags.add(tagName);
+    public void addTag(Tag tag) {
+        if (!tags.contains(tag)) {
+            this.tags.add(tag);
         }
 
     }

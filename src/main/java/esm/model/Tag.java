@@ -2,13 +2,25 @@ package esm.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 @Entity
 @Table(name = "tages")
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer tag_id;
+
+
     private String name;
+
+    @ManyToMany(mappedBy = "tags")
+    private Set<GiftCertificate> certificates;
+
+
+
 
     public int getId() {
         return tag_id;
