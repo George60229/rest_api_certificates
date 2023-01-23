@@ -5,7 +5,9 @@ import esm.model.Tag;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ResponseCertificateDTO {
 
@@ -20,7 +22,7 @@ public class ResponseCertificateDTO {
     private String lastUpdateDate;
 
 
-    private List<Tag> tags = new ArrayList<>();
+    private Set<Tag> tags = new HashSet<>();
 
     public Integer getCertificateId() {
         return certificateId;
@@ -78,11 +80,11 @@ public class ResponseCertificateDTO {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public List<Tag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 

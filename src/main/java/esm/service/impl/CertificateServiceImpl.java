@@ -9,7 +9,9 @@ import esm.exception.AppNotFoundException;
 
 import esm.exception.ErrorCode;
 import esm.model.GiftCertificate;
+import esm.model.Tag;
 import esm.repository.CertificateRepository;
+import esm.repository.TagRepository;
 import esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,9 @@ public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateRepository certificateRepository;
 
-    public CertificateServiceImpl(CertificateRepository certificateRepository) {
+    public CertificateServiceImpl(CertificateRepository certificateRepository, TagRepository tagRepository) {
         this.certificateRepository = certificateRepository;
+
     }
 
     @Autowired
@@ -70,8 +73,7 @@ public class CertificateServiceImpl implements CertificateService {
         if (giftCertificate.isEmpty()) {
             throw new AppNotFoundException("Certificate with this id is not exist"+id,ErrorCode.TAG_NOT_FOUND);
         }
-        GiftCertificate certificate = giftCertificate.get();
-
+       GiftCertificate certificate= giftCertificate.get();
 
         return converter.convertToDTO(certificateRepository.save(converter.updateByRequest(certificate, certificateEditDto)));
     }

@@ -86,6 +86,7 @@ public class CertificateConverter {
         if (certificateRequestDTO.getTags() != null) {
             giftCertificate.setTags(certificateRequestDTO.getTags());
         }
+        giftCertificate.setLastUpdateDate(LocalDateTime.now());
         return giftCertificate;
     }
 }

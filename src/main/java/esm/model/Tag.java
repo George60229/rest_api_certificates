@@ -16,8 +16,6 @@ public class Tag {
 
     private String name;
 
-    @ManyToMany(mappedBy = "tags")
-    private Set<GiftCertificate> certificates;
 
 
 
