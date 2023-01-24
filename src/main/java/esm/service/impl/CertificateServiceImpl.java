@@ -16,6 +16,7 @@ import esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,9 +25,12 @@ public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateRepository certificateRepository;
 
+    private final TagRepository tagRepository;
+
     public CertificateServiceImpl(CertificateRepository certificateRepository, TagRepository tagRepository) {
         this.certificateRepository = certificateRepository;
 
+        this.tagRepository = tagRepository;
     }
 
     @Autowired
@@ -63,6 +67,7 @@ public class CertificateServiceImpl implements CertificateService {
         if (certificateFindByDTO == null) {
             certificateFindByDTO = new CertificateFindByDTO();
         }
+
         return converter.convertListToDTO(certificateRepository.findAll());
     }
 
@@ -71,9 +76,20 @@ public class CertificateServiceImpl implements CertificateService {
         Optional<GiftCertificate> giftCertificate = certificateRepository.findById(id);
 
         if (giftCertificate.isEmpty()) {
-            throw new AppNotFoundException("Certificate with this id is not exist"+id,ErrorCode.TAG_NOT_FOUND);
+            throw new AppNotFoundException("Certificate with this id is not exist" + id, ErrorCode.TAG_NOT_FOUND);
         }
-       GiftCertificate certificate= giftCertificate.get();
+
+        GiftCertificate certificate = giftCertificate.get();
+        List<Tag> result = new ArrayList<>();
+
+        for (int i = 0; i < certificateEditDto.getTags().size(); i++) {
+            List<Tag> tags = tagRepository.findByNameLike(certificateEditDto.getTags().get(0).getName());
+            if (!tagRepository.findByNameLike(certificateEditDto.getTags().get(0).getName()).isEmpty()) {
+                result.addAll(tags);
+                certificateEditDto.setTags(result);
+            }
+        }
+
 
         return converter.convertToDTO(certificateRepository.save(converter.updateByRequest(certificate, certificateEditDto)));
     }

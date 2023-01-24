@@ -56,8 +56,8 @@ public class CertificateConverter {
     }
 
     public GiftCertificate updateByField(CertificateEditDto certificateEditDto, GiftCertificate giftCertificate) {
-        String value=certificateEditDto.getValue();
-        switch (certificateEditDto.getParameter()){
+        String value = certificateEditDto.getValue();
+        switch (certificateEditDto.getParameter()) {
             case NAME -> giftCertificate.setName(value);
             case DESCRIPTION -> giftCertificate.setDescription(value);
             case PRICE -> giftCertificate.setPrice(BigDecimal.valueOf(Integer.parseInt(value)));
@@ -83,9 +83,10 @@ public class CertificateConverter {
         if (giftCertificate.getDuration() == 0) {
             giftCertificate.setDuration(certificateRequestDTO.getDuration());
         }
-        if (certificateRequestDTO.getTags() != null) {
+        if (!certificateRequestDTO.getTags().isEmpty()) {
             giftCertificate.setTags(certificateRequestDTO.getTags());
         }
+
         giftCertificate.setLastUpdateDate(LocalDateTime.now());
         return giftCertificate;
     }

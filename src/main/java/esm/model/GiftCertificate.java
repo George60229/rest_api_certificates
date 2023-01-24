@@ -26,7 +26,7 @@ public class GiftCertificate {
     @JoinTable(name = "certificates_tags",
             joinColumns = {@JoinColumn(name = "certificate_id")},
             inverseJoinColumns = {@JoinColumn(name = "tag_id")})
-    private Set<Tag> tags;
+    private List<Tag> tags;
     //todo
 
     public Integer getId() {
@@ -85,11 +85,11 @@ public class GiftCertificate {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public Set<Tag> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(Set<Tag> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 

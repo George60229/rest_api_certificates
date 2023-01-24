@@ -22,7 +22,7 @@ public class ResponseCertificateDTO {
     private String lastUpdateDate;
 
 
-    private Set<Tag> tags = new HashSet<>();
+    private List<Tag> tags = new ArrayList<>();
 
     public Integer getCertificateId() {
         return certificateId;
@@ -80,11 +80,11 @@ public class ResponseCertificateDTO {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public Set<Tag> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(Set<Tag> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 
