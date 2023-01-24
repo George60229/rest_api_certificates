@@ -49,5 +49,11 @@ public class CertificateController {
         return certificateServiceBean.editCertificate(certificateRequestDTO, id);
     }
 
+    @GetMapping("/findByTag/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ResponseCertificateDTO> findByTag(@PathVariable String name) {
+        return certificateServiceBean.findByTagName(name);
+    }
+
 
 }

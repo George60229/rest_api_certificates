@@ -68,6 +68,8 @@ public interface CertificateService {
 
 
     ResponseCertificateDTO editCertificate(CertificateRequestDTO certificateEditDto, int id);
+
+    List<ResponseCertificateDTO>findByTagName(String tagName);
 }
 
 

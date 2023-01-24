@@ -38,6 +38,9 @@ public class GiftCertificate {
     }
 
     public String getName() {
+        if(this.name==null){
+            return "";
+        }
         return name;
     }
 

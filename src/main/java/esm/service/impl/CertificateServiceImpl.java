@@ -7,18 +7,24 @@ import esm.dto.request.CertificateRequestDTO;
 import esm.dto.response.ResponseCertificateDTO;
 import esm.exception.AppNotFoundException;
 
+import esm.exception.BadRequestException;
 import esm.exception.ErrorCode;
 import esm.model.GiftCertificate;
 import esm.model.Tag;
 import esm.repository.CertificateRepository;
 import esm.repository.TagRepository;
 import esm.service.CertificateService;
+import esm.utils.FindParameter;
+import esm.utils.SortParameter;
+import esm.utils.SortWay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CertificateServiceImpl implements CertificateService {
@@ -67,8 +73,34 @@ public class CertificateServiceImpl implements CertificateService {
         if (certificateFindByDTO == null) {
             certificateFindByDTO = new CertificateFindByDTO();
         }
+        if (!certificateFindByDTO.getFindParameter().equals(FindParameter.DEFAULT) && certificateFindByDTO.getValue().equals("")) {
+            throw new BadRequestException("Value must have FindParameter", ErrorCode.BAD_REQUEST_ERROR);
+        }
+        List<GiftCertificate> res;
 
-        return converter.convertListToDTO(certificateRepository.findAll());
+        if (certificateFindByDTO.getFindParameter().name().equals("DESCRIPTION")) {
+            res = certificateRepository.findByDescriptionLike(certificateFindByDTO.getValue());
+        } else if (certificateFindByDTO.getFindParameter().name().equals("NAME")) {
+            res = certificateRepository.findByNameLike(certificateFindByDTO.getValue());
+        } else {
+            res = certificateRepository.findAll();
+        }
+
+        if (certificateFindByDTO.getSortParameter().equals(SortParameter.DATE)) {
+            if (certificateFindByDTO.getSortWay().equals(SortWay.DESC)) {
+                res = res.stream().sorted(Comparator.comparing(GiftCertificate::getCreateDate).reversed()).collect(Collectors.toList());
+            } else
+                res = res.stream().sorted(Comparator.comparing(GiftCertificate::getCreateDate)).collect(Collectors.toList());
+        }
+        if (certificateFindByDTO.getSortParameter().equals(SortParameter.NAME)) {
+            if (certificateFindByDTO.getSortWay().equals(SortWay.DESC)) {
+                res = res.stream().sorted(Comparator.comparing(GiftCertificate::getName).reversed()).collect(Collectors.toList());
+            } else
+                res = res.stream().sorted(Comparator.comparing(GiftCertificate::getName)).collect(Collectors.toList());
+        }
+
+
+        return converter.convertListToDTO(res);
     }
 
     @Override
@@ -83,15 +115,20 @@ public class CertificateServiceImpl implements CertificateService {
         List<Tag> result = new ArrayList<>();
 
         for (int i = 0; i < certificateEditDto.getTags().size(); i++) {
-            List<Tag> tags = tagRepository.findByNameLike(certificateEditDto.getTags().get(0).getName());
-            if (!tagRepository.findByNameLike(certificateEditDto.getTags().get(0).getName()).isEmpty()) {
+            List<Tag> tags = tagRepository.findByNameLike(certificateEditDto.getTags().get(i).getName());
+            if (!tagRepository.findByNameLike(certificateEditDto.getTags().get(i).getName()).isEmpty()) {
                 result.addAll(tags);
-                certificateEditDto.setTags(result);
+
             }
+
         }
-
-
+        certificateEditDto.setTags(result);
         return converter.convertToDTO(certificateRepository.save(converter.updateByRequest(certificate, certificateEditDto)));
+    }
+
+    @Override
+    public List<ResponseCertificateDTO> findByTagName(String tagName) {
+        return converter.convertListToDTO(certificateRepository.findByTagsName(tagName));
     }
 
 
