@@ -13,8 +13,6 @@ import java.util.List;
 public interface CertificateService {
 
 
-
-
     /**
      * get all entity
      *
@@ -31,10 +29,6 @@ public interface CertificateService {
      */
 
     void deleteCertificateById(Integer id);
-
-
-
-
 
 
     ResponseCertificateDTO getCertificateById(@RequestParam int id);
@@ -61,15 +55,14 @@ public interface CertificateService {
      */
 
 
-
     ResponseCertificateDTO createCertificate(@RequestBody CertificateRequestDTO certificateDTO);
-
-
 
 
     ResponseCertificateDTO editCertificate(CertificateRequestDTO certificateEditDto, int id);
 
-    List<ResponseCertificateDTO>findByTagName(String tagName);
+    List<ResponseCertificateDTO> findByTagName(String tagName);
+
+    ResponseCertificateDTO editOneField(CertificateEditDto certificateEditDto);
 }
 
 

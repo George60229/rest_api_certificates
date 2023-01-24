@@ -2,6 +2,7 @@ package esm.service.impl;
 
 
 import esm.converter.CertificateConverter;
+import esm.dto.request.CertificateEditDto;
 import esm.dto.request.CertificateFindByDTO;
 import esm.dto.request.CertificateRequestDTO;
 import esm.dto.response.ResponseCertificateDTO;
@@ -129,6 +130,25 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public List<ResponseCertificateDTO> findByTagName(String tagName) {
         return converter.convertListToDTO(certificateRepository.findByTagsName(tagName));
+    }
+
+    @Override
+    public ResponseCertificateDTO editOneField(CertificateEditDto certificateEditDto) {
+
+        if (certificateEditDto.getParameter() == null || certificateEditDto.getValue() == null
+                || certificateEditDto.getId() == 0) {
+            throw new BadRequestException("Value, id and parameter can't be null", ErrorCode.BAD_REQUEST_ERROR);
+        }
+        int id = certificateEditDto.getId();
+
+        Optional<GiftCertificate> certificate = certificateRepository.findById(id);
+        if (certificate.isEmpty()) {
+            throw new AppNotFoundException("Certificate with this id is not found: " + id,
+                    ErrorCode.CERTIFICATE_NOT_FOUND);
+        }
+
+        GiftCertificate giftCertificate = certificate.get();
+        return converter.convertToDTO(certificateRepository.save(converter.updateByField(certificateEditDto, giftCertificate)));
     }
 
 

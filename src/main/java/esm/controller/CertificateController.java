@@ -1,6 +1,7 @@
 package esm.controller;
 
 
+import esm.dto.request.CertificateEditDto;
 import esm.dto.request.CertificateFindByDTO;
 import esm.dto.request.CertificateRequestDTO;
 import esm.dto.response.ResponseCertificateDTO;
@@ -53,6 +54,13 @@ public class CertificateController {
     @ResponseStatus(HttpStatus.OK)
     public List<ResponseCertificateDTO> findByTag(@PathVariable String name) {
         return certificateServiceBean.findByTagName(name);
+    }
+
+    @PutMapping("/editOneField")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseCertificateDTO editCertificateByParameter(@RequestBody CertificateEditDto certificateEditDto) {
+        return certificateServiceBean.editOneField(certificateEditDto);
+
     }
 
 
