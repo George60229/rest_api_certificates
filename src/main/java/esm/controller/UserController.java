@@ -36,11 +36,12 @@ public class UserController {
         return userService.getAll();
     }
 
-    @PostMapping("/buyCertificate/{id}")
-    public UserResponseDto buyCertificate(String name,@PathVariable(value = "id")int id){
+    @PostMapping("/buyCertificate/{id}/{name}")
+    public UserResponseDto buyCertificate(@PathVariable(value = "name") String name,@PathVariable(value = "id")int id){
         return userService.addCertificate(name,id);
 
     }
+
 
 
 }

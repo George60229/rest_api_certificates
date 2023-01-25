@@ -13,7 +13,7 @@ public class User {
     Integer userId;
     String username;
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch=FetchType.EAGER)
+    @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(name = "user_certificates",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "certificate_id")})
@@ -41,6 +41,9 @@ public class User {
 
     public void setGiftCertificates(List<GiftCertificate> giftCertificates) {
         this.giftCertificates = giftCertificates;
+    }
+    public void addGiftCertificate(List<GiftCertificate> giftCertificate){
+        this.giftCertificates.addAll(giftCertificate);
     }
 }
 

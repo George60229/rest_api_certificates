@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "certificates")
@@ -26,7 +25,7 @@ public class GiftCertificate {
     @JoinTable(name = "certificates_tags",
             joinColumns = {@JoinColumn(name = "certificate_id")},
             inverseJoinColumns = {@JoinColumn(name = "tag_id")})
-    private List<Tag> tags;
+    private List<Tag> tags=new ArrayList<>();
     //todo
 
     public Integer getId() {
