@@ -2,13 +2,17 @@ package esm.service;
 
 
 
+import esm.dto.request.UserRequestDto;
+import esm.dto.response.UserResponseDto;
 import esm.model.User;
 
 import java.util.Collection;
 import java.util.List;
 
 public interface UserService {
-    User create(User user);
+    UserResponseDto create(UserRequestDto user);
 
-    List<User> getAll();
+    List<UserResponseDto> getAll();
+
+    UserResponseDto addCertificate(String name,int id);
 }

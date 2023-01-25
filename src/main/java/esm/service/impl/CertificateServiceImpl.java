@@ -64,8 +64,23 @@ public class CertificateServiceImpl implements CertificateService {
 
 
     @Override
-    public ResponseCertificateDTO createCertificate(CertificateRequestDTO certificateDTO) {
-        return converter.convertToDTO(certificateRepository.save(converter.convertDTOtoModel(certificateDTO)));
+    public ResponseCertificateDTO createCertificate(CertificateRequestDTO certificateDto) {
+
+        List<Tag> result = new ArrayList<>();
+
+        for (int i = 0; i < certificateDto.getTags().size(); i++) {
+            List<Tag> tags = tagRepository.findByName(certificateDto.getTags().get(i).getName());
+            if (!tagRepository.findByName(certificateDto.getTags().get(i).getName()).isEmpty()) {
+                result.addAll(tags);
+            } else {
+                Tag tag = new Tag();
+                tag.setName(certificateDto.getTags().get(i).getName());
+                result.add(tag);
+            }
+
+        }
+        certificateDto.setTags(result);
+        return converter.convertToDTO(certificateRepository.save(converter.convertDTOtoModel(certificateDto)));
     }
 
 
@@ -116,10 +131,13 @@ public class CertificateServiceImpl implements CertificateService {
         List<Tag> result = new ArrayList<>();
 
         for (int i = 0; i < certificateEditDto.getTags().size(); i++) {
-            List<Tag> tags = tagRepository.findByNameLike(certificateEditDto.getTags().get(i).getName());
-            if (!tagRepository.findByNameLike(certificateEditDto.getTags().get(i).getName()).isEmpty()) {
+            List<Tag> tags = tagRepository.findByName(certificateEditDto.getTags().get(i).getName());
+            if (!tagRepository.findByName(certificateEditDto.getTags().get(i).getName()).isEmpty()) {
                 result.addAll(tags);
-
+            } else {
+                Tag tag = new Tag();
+                tag.setName(certificateEditDto.getTags().get(i).getName());
+                result.add(tag);
             }
 
         }

@@ -2,7 +2,9 @@ package esm.controller;
 
 import esm.dto.request.CertificateFindByDTO;
 import esm.dto.request.CertificateRequestDTO;
+import esm.dto.request.UserRequestDto;
 import esm.dto.response.ResponseCertificateDTO;
+import esm.dto.response.UserResponseDto;
 import esm.model.User;
 import esm.service.UserService;
 import esm.service.impl.CertificateServiceImpl;
@@ -25,13 +27,19 @@ public class UserController {
 
 
     @PostMapping("/addUser")
-    public User addUser(@RequestBody User user) {
+    public UserResponseDto addUser(@RequestBody UserRequestDto user) {
         return userService.create(user);
     }
 
     @GetMapping("/getAllUsers")
-    public List<User> getAllCertificate() {
+    public List<UserResponseDto> getAllUsers() {
         return userService.getAll();
+    }
+
+    @PostMapping("/buyCertificate/{id}")
+    public UserResponseDto buyCertificate(String name,@PathVariable(value = "id")int id){
+        return userService.addCertificate(name,id);
+
     }
 
 
