@@ -6,6 +6,9 @@ import esm.dto.response.TagResponseDTO;
 import esm.dto.response.UserResponseDto;
 import esm.model.Tag;
 import esm.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.geo.GeoPage;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,10 +17,10 @@ import java.util.stream.Collectors;
 @Component
 public class UserConverter {
 
-    public List<UserResponseDto> convert(List<User> users) {
-        return users.stream()
+    public Page<UserResponseDto> convert(Page<User> users) {
+        return listToPage(users.stream()
                 .map(this::convertOneToDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
 
     }
 
@@ -34,6 +37,11 @@ public class UserConverter {
         user.setUsername(userDTO.getName());
         user.setGiftCertificates(userDTO.getCertificates());
         return user;
+    }
+
+    public Page<UserResponseDto> listToPage(List<UserResponseDto> userResponseDto) {
+
+        return new PageImpl<>(userResponseDto);
     }
 }
 

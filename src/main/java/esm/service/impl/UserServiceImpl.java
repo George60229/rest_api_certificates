@@ -14,6 +14,8 @@ import esm.repository.CertificateRepository;
 import esm.repository.UserRepository;
 import esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -57,8 +59,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponseDto> getAll() {
-        return converter.convert(userRepository.findAll());
+    public Page<UserResponseDto> getAll(Pageable pageable) {
+        return converter.convert(userRepository.findAll(pageable));
     }
 
     @Override

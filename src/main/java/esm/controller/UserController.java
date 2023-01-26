@@ -4,6 +4,9 @@ import esm.dto.request.UserRequestDto;
 import esm.dto.response.UserResponseDto;
 import esm.service.UserService;
 import esm.service.impl.UserServiceImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +27,10 @@ public class UserController {
         return userService.create(user);
     }
 
-    @GetMapping("/getAllUsers")
-    public List<UserResponseDto> getAllUsers() {
-        return userService.getAll();
+    @GetMapping("/getAllUsers/{page}")
+    public Page<UserResponseDto> getAllUsers(@PathVariable(value = "page") int number) {
+        Pageable pageable = PageRequest.of(number-1, 5);
+        return userService.getAll(pageable);
     }
 
     @PostMapping("/buyCertificate/{id}/{name}")

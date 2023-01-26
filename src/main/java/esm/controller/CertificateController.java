@@ -7,6 +7,7 @@ import esm.dto.request.CertificateRequestDTO;
 import esm.dto.request.FindByTagDto;
 import esm.dto.response.ResponseCertificateDTO;
 import esm.service.impl.CertificateServiceImpl;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
