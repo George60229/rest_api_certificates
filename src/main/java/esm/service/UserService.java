@@ -15,4 +15,6 @@ public interface UserService {
     List<UserResponseDto> getAll();
 
     UserResponseDto addCertificate(String name,int id);
+
+    UserResponseDto getUserById(int id);
 }

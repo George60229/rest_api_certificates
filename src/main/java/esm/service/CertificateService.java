@@ -63,6 +63,8 @@ public interface CertificateService {
     List<ResponseCertificateDTO> findByTagName(String tagName);
 
     ResponseCertificateDTO editOneField(CertificateEditDto certificateEditDto);
+
+    List<ResponseCertificateDTO> findByTagsNameList(List<String> tagNames);
 }
 
 

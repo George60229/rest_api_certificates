@@ -4,6 +4,7 @@ package esm.controller;
 import esm.dto.request.CertificateEditDto;
 import esm.dto.request.CertificateFindByDTO;
 import esm.dto.request.CertificateRequestDTO;
+import esm.dto.request.FindByTagDto;
 import esm.dto.response.ResponseCertificateDTO;
 import esm.service.impl.CertificateServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -61,6 +62,12 @@ public class CertificateController {
     public ResponseCertificateDTO editCertificateByParameter(@RequestBody CertificateEditDto certificateEditDto) {
         return certificateServiceBean.editOneField(certificateEditDto);
 
+    }
+
+    @GetMapping("/findByTags")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ResponseCertificateDTO> findByTagList(@RequestBody FindByTagDto tagNames) {
+        return certificateServiceBean.findByTagsNameList(tagNames.getTagNames());
     }
 
 

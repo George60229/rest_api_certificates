@@ -81,4 +81,13 @@ public class UserServiceImpl implements UserService {
         }
         return converter.convertOneToDTO(responseDto.get());
     }
+
+    @Override
+    public UserResponseDto getUserById(int id) {
+        Optional<User> userOptional=userRepository.findById(id);
+        if(userOptional.isEmpty()){
+            throw new AppNotFoundException("User with this id is not found " + id, ErrorCode.USER_NOT_FOUND);
+        }
+        return converter.convertOneToDTO(userOptional.get());
+    }
 }

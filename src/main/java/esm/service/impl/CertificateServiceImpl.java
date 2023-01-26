@@ -169,5 +169,14 @@ public class CertificateServiceImpl implements CertificateService {
         return converter.convertToDTO(certificateRepository.save(converter.updateByField(certificateEditDto, giftCertificate)));
     }
 
+    @Override
+    public List<ResponseCertificateDTO> findByTagsNameList(List<String> tagNames) {
+        List<GiftCertificate> giftCertificates = new ArrayList<>();
+        for (String tagName : tagNames) {
+            giftCertificates.addAll(certificateRepository.findByTagsName(tagName));
+        }
+        return converter.convertListToDTO(giftCertificates);
+
+    }
 
 }
