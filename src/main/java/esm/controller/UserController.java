@@ -1,5 +1,6 @@
 package esm.controller;
 
+import esm.dto.request.BuyCertificatesDto;
 import esm.dto.request.UserRequestDto;
 import esm.dto.response.UserResponseDto;
 import esm.service.UserService;
@@ -9,8 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -29,12 +28,13 @@ public class UserController {
 
     @GetMapping("/getAllUsers/{page}")
     public Page<UserResponseDto> getAllUsers(@PathVariable(value = "page") int number) {
+
         Pageable pageable = PageRequest.of(number-1, 5);
         return userService.getAll(pageable);
     }
 
-    @PostMapping("/buyCertificate/{id}/{name}")
-    public UserResponseDto buyCertificate(@PathVariable(value = "name") String name, @PathVariable(value = "id") int id) {
+    @PostMapping("/buyCertificate/{id}")
+    public UserResponseDto buyCertificate(@RequestBody BuyCertificatesDto name, @PathVariable(value = "id") int id) {
         return userService.addCertificate(name, id);
 
     }

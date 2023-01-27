@@ -2,6 +2,7 @@ package esm.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -13,11 +14,11 @@ public class User {
     Integer userId;
     String username;
 
-    @ManyToMany(fetch=FetchType.EAGER)
-    @JoinTable(name = "user_certificates",
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinTable(name = "user_orders",
             joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "certificate_id")})
-    private List<GiftCertificate> giftCertificates;
+            inverseJoinColumns = {@JoinColumn(name = "id")})
+    private List<Order> orders=new ArrayList<>();
 
     public Integer getUserId() {
         return userId;
@@ -35,15 +36,16 @@ public class User {
         this.username = username;
     }
 
-    public List<GiftCertificate> getGiftCertificates() {
-        return giftCertificates;
+    public List<Order> getOrders() {
+        return orders;
     }
 
-    public void setGiftCertificates(List<GiftCertificate> giftCertificates) {
-        this.giftCertificates = giftCertificates;
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
-    public void addGiftCertificate(List<GiftCertificate> giftCertificate){
-        this.giftCertificates.addAll(giftCertificate);
+
+    public void addOrder(Order order) {
+        this.orders.add(order);
     }
 }
 

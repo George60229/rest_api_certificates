@@ -2,6 +2,7 @@ package esm.service;
 
 
 
+import esm.dto.request.BuyCertificatesDto;
 import esm.dto.request.UserRequestDto;
 import esm.dto.response.UserResponseDto;
 import esm.model.User;
@@ -16,7 +17,7 @@ public interface UserService {
 
     Page<UserResponseDto> getAll(Pageable pageable);
 
-    UserResponseDto addCertificate(String name,int id);
+    UserResponseDto addCertificate(BuyCertificatesDto name, int id);
 
     UserResponseDto getUserById(int id);
 }

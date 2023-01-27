@@ -1,6 +1,7 @@
 package esm.dto.response;
 
 import esm.model.GiftCertificate;
+import esm.model.Order;
 
 import java.util.List;
 
@@ -8,7 +9,7 @@ public class UserResponseDto {
     private int userId;
     private String name;
 
-    private List<GiftCertificate> certificates;
+    private List<Order> orders;
 
     public int getUserId() {
         return userId;
@@ -26,15 +27,15 @@ public class UserResponseDto {
         this.name = name;
     }
 
-    public List<GiftCertificate> getCertificates() {
-        return certificates;
+    public List<Order> getOrders() {
+        return orders;
     }
 
-    public void setCertificates(List<GiftCertificate> certificates) {
-        this.certificates = certificates;
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 
-    public void addCertificate(GiftCertificate giftCertificate) {
-        certificates.add(giftCertificate);
+    public void addOrder(Order order) {
+        orders.add(order);
     }
 }
