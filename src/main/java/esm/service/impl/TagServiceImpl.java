@@ -2,7 +2,6 @@ package esm.service.impl;
 
 
 import esm.converter.TagConverter;
-
 import esm.dto.request.TagRequestDTO;
 import esm.dto.response.TagResponseDTO;
 import esm.exception.AppNotFoundException;
@@ -11,9 +10,10 @@ import esm.model.Tag;
 import esm.repository.TagRepository;
 import esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 
@@ -37,8 +37,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagResponseDTO> getAllTags() {
-        return converter.convert(tagRepository.findAll());
+    public Page<TagResponseDTO> getAllTags(Pageable pageable) {
+        return converter.convert(tagRepository.findAll(pageable));
     }
 
     @Override

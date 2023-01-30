@@ -4,8 +4,11 @@ package esm.converter;
 import esm.dto.request.CertificateEditDto;
 import esm.dto.request.CertificateRequestDTO;
 import esm.dto.response.ResponseCertificateDTO;
+import esm.dto.response.UserResponseDto;
 import esm.model.GiftCertificate;
 import esm.model.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -17,11 +20,11 @@ import java.util.stream.Collectors;
 @Component
 public class CertificateConverter {
 
-    public List<ResponseCertificateDTO> convertListToDTO(List<GiftCertificate> certificates) {
+    public Page<ResponseCertificateDTO> convertListToDTO(List<GiftCertificate> certificates) {
 
-        return certificates.stream()
+        return listToPage(certificates.stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
 
 
     }
@@ -90,6 +93,9 @@ public class CertificateConverter {
         giftCertificate.setLastUpdateDate(LocalDateTime.now());
         return giftCertificate;
     }
+    public Page<ResponseCertificateDTO> listToPage(List<ResponseCertificateDTO> certificateResponseDto) {
 
+        return new PageImpl<>(certificateResponseDto);
+    }
 
 }

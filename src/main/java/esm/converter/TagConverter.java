@@ -4,6 +4,8 @@ package esm.converter;
 import esm.dto.request.TagRequestDTO;
 import esm.dto.response.TagResponseDTO;
 import esm.model.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,10 +14,10 @@ import java.util.stream.Collectors;
 @Component
 public class TagConverter {
 
-    public List<TagResponseDTO> convert(List<Tag> tags) {
-        return tags.stream()
+    public Page<TagResponseDTO> convert(Page<Tag> tags) {
+        return listToPage(tags.stream()
                 .map(this::convertOneToDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
 
     }
 
@@ -30,5 +32,10 @@ public class TagConverter {
         Tag tag = new Tag();
         tag.setName(tagDTO.getName());
         return tag;
+    }
+
+    public Page<TagResponseDTO> listToPage(List<TagResponseDTO> tagResponseDto) {
+
+        return new PageImpl<>(tagResponseDto);
     }
 }

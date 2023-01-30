@@ -6,11 +6,14 @@ import esm.dto.request.CertificateFindByDTO;
 import esm.dto.request.CertificateRequestDTO;
 import esm.dto.request.FindByTagDto;
 import esm.dto.response.ResponseCertificateDTO;
+import esm.dto.response.TagResponseDTO;
+import esm.service.CertificateService;
 import esm.service.impl.CertificateServiceImpl;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.List;
 
@@ -19,7 +22,7 @@ import java.util.List;
 @RequestMapping(value = "/certificate")
 public class CertificateController {
 
-    private final CertificateServiceImpl certificateServiceBean;
+    private final CertificateService certificateServiceBean;
 
     public CertificateController(CertificateServiceImpl certificateServiceBean) {
         this.certificateServiceBean = certificateServiceBean;
@@ -35,9 +38,10 @@ public class CertificateController {
         return certificateServiceBean.createCertificate(giftCertificate);
     }
 
-    @GetMapping("/getAllCertificates")
-    public List<ResponseCertificateDTO> getAllCertificate(@RequestBody CertificateFindByDTO certificateFindByDTO) {
-        return certificateServiceBean.listCertificates(certificateFindByDTO);
+    @GetMapping("/getAllCertificates/{page}")
+    public Page<ResponseCertificateDTO> getAllCertificate(@PathVariable(value = "page") int number,@RequestBody CertificateFindByDTO certificateFindByDTO) {
+        Pageable pageable = PageRequest.of(number - 1, 5);
+        return certificateServiceBean.listCertificates(certificateFindByDTO,pageable);
     }
 
     @DeleteMapping("/{id}")
@@ -52,10 +56,11 @@ public class CertificateController {
         return certificateServiceBean.editCertificate(certificateRequestDTO, id);
     }
 
-    @GetMapping("/findByTag/{name}")
+    @GetMapping("/findByTag/{name}/{page}")
     @ResponseStatus(HttpStatus.OK)
-    public List<ResponseCertificateDTO> findByTag(@PathVariable String name) {
-        return certificateServiceBean.findByTagName(name);
+    public Page<ResponseCertificateDTO> findByTag(@PathVariable(value = "name") String name ,@PathVariable(value = "page") int number) {
+        Pageable pageable = PageRequest.of(number - 1, 5);
+        return certificateServiceBean.findByTagName(name,pageable);
     }
 
     @PutMapping("/editOneField")
@@ -65,10 +70,16 @@ public class CertificateController {
 
     }
 
-    @GetMapping("/findByTags")
+    @GetMapping("/findByTags/{page}")
     @ResponseStatus(HttpStatus.OK)
-    public List<ResponseCertificateDTO> findByTagList(@RequestBody FindByTagDto tagNames) {
-        return certificateServiceBean.findByTagsNameList(tagNames.getTagNames());
+    public Page<ResponseCertificateDTO> findByTagList(@RequestBody FindByTagDto tagNames,@PathVariable(value = "page") int number) {
+        Pageable pageable = PageRequest.of(number - 1, 5);
+        return certificateServiceBean.findByTagsNameList(tagNames.getTagNames(),pageable);
+    }
+
+    @GetMapping("/findPopularTag")
+    public Page<TagResponseDTO> popularTag(){
+        return certificateServiceBean.popularTag();
     }
 
 

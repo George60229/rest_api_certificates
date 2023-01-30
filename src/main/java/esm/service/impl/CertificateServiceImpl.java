@@ -2,10 +2,12 @@ package esm.service.impl;
 
 
 import esm.converter.CertificateConverter;
+import esm.converter.TagConverter;
 import esm.dto.request.CertificateEditDto;
 import esm.dto.request.CertificateFindByDTO;
 import esm.dto.request.CertificateRequestDTO;
 import esm.dto.response.ResponseCertificateDTO;
+import esm.dto.response.TagResponseDTO;
 import esm.exception.AppNotFoundException;
 
 import esm.exception.BadRequestException;
@@ -19,12 +21,12 @@ import esm.utils.FindParameter;
 import esm.utils.SortParameter;
 import esm.utils.SortWay;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +44,9 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Autowired
     private CertificateConverter converter;
+
+    @Autowired
+    private TagConverter tagConverter;
 
 
     @Override
@@ -66,26 +71,13 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public ResponseCertificateDTO createCertificate(CertificateRequestDTO certificateDto) {
 
-        List<Tag> result = new ArrayList<>();
-
-        for (int i = 0; i < certificateDto.getTags().size(); i++) {
-            List<Tag> tags = tagRepository.findByName(certificateDto.getTags().get(i).getName());
-            if (!tagRepository.findByName(certificateDto.getTags().get(i).getName()).isEmpty()) {
-                result.addAll(tags);
-            } else {
-                Tag tag = new Tag();
-                tag.setName(certificateDto.getTags().get(i).getName());
-                result.add(tag);
-            }
-
-        }
-        certificateDto.setTags(result);
+        create(certificateDto);
         return converter.convertToDTO(certificateRepository.save(converter.convertDTOtoModel(certificateDto)));
     }
 
 
     @Override
-    public List<ResponseCertificateDTO> listCertificates(CertificateFindByDTO certificateFindByDTO) {
+    public Page<ResponseCertificateDTO> listCertificates(CertificateFindByDTO certificateFindByDTO, Pageable pageable) {
         if (certificateFindByDTO == null) {
             certificateFindByDTO = new CertificateFindByDTO();
         }
@@ -128,25 +120,12 @@ public class CertificateServiceImpl implements CertificateService {
         }
 
         GiftCertificate certificate = giftCertificate.get();
-        List<Tag> result = new ArrayList<>();
-
-        for (int i = 0; i < certificateEditDto.getTags().size(); i++) {
-            List<Tag> tags = tagRepository.findByName(certificateEditDto.getTags().get(i).getName());
-            if (!tagRepository.findByName(certificateEditDto.getTags().get(i).getName()).isEmpty()) {
-                result.addAll(tags);
-            } else {
-                Tag tag = new Tag();
-                tag.setName(certificateEditDto.getTags().get(i).getName());
-                result.add(tag);
-            }
-
-        }
-        certificateEditDto.setTags(result);
+        create(certificateEditDto);
         return converter.convertToDTO(certificateRepository.save(converter.updateByRequest(certificate, certificateEditDto)));
     }
 
     @Override
-    public List<ResponseCertificateDTO> findByTagName(String tagName) {
+    public Page<ResponseCertificateDTO> findByTagName(String tagName, Pageable pageable) {
         return converter.convertListToDTO(certificateRepository.findByTagsName(tagName));
     }
 
@@ -170,13 +149,38 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<ResponseCertificateDTO> findByTagsNameList(List<String> tagNames) {
+    public Page<ResponseCertificateDTO> findByTagsNameList(List<String> tagNames, Pageable pageable) {
         List<GiftCertificate> giftCertificates = new ArrayList<>();
         for (String tagName : tagNames) {
             giftCertificates.addAll(certificateRepository.findByTagsName(tagName));
         }
-        return converter.convertListToDTO(giftCertificates);
+        List<GiftCertificate> certificates = giftCertificates.stream().
+                filter(p -> new HashSet<>(p.getTagNames()).containsAll(tagNames)).toList();
+        return converter.convertListToDTO(certificates);
 
+    }
+
+    @Override
+    public Page<TagResponseDTO> popularTag() {
+        Pageable pageable = PageRequest.of(0, 5);
+        return tagConverter.convert(certificateRepository.countByTagsName(pageable));
+    }
+
+    private void create(CertificateRequestDTO certificateEditDto) {
+        List<Tag> result = new ArrayList<>();
+
+        for (int i = 0; i < certificateEditDto.getTags().size(); i++) {
+            List<Tag> tags = tagRepository.findByName(certificateEditDto.getTags().get(i).getName());
+            if (!tagRepository.findByName(certificateEditDto.getTags().get(i).getName()).isEmpty()) {
+                result.addAll(tags);
+            } else {
+                Tag tag = new Tag();
+                tag.setName(certificateEditDto.getTags().get(i).getName());
+                result.add(tag);
+            }
+
+        }
+        certificateEditDto.setTags(result);
     }
 
 }

@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "certificates")
@@ -21,12 +22,12 @@ public class GiftCertificate {
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
 
-    @ManyToMany(cascade = CascadeType.MERGE,fetch=FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL,fetch=FetchType.EAGER)
     @JoinTable(name = "certificates_tags",
             joinColumns = {@JoinColumn(name = "certificate_id")},
             inverseJoinColumns = {@JoinColumn(name = "tag_id")})
     private List<Tag> tags=new ArrayList<>();
-    //todo
+
 
     public Integer getId() {
         return certificateId;
@@ -42,7 +43,7 @@ public class GiftCertificate {
         }
         return name;
     }
-
+//todo fix postman all is not works
     public void setName(String name) {
         this.name = name;
     }
@@ -99,10 +100,10 @@ public class GiftCertificate {
         this.tags.add(tag);
     }
 
-    public void addTag(Tag tag) {
-        if (!tags.contains(tag)) {
-            this.tags.add(tag);
-        }
+    public List<String> getTagNames() {
+       return tags.stream()
+                .map(Tag::getName)
+                .collect(Collectors.toList());
 
     }
 

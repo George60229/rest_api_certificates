@@ -2,6 +2,7 @@ package esm.controller;
 
 import esm.dto.request.BuyCertificatesDto;
 import esm.dto.request.UserRequestDto;
+import esm.dto.response.TagResponseDTO;
 import esm.dto.response.UserResponseDto;
 import esm.service.UserService;
 import esm.service.impl.UserServiceImpl;
@@ -29,7 +30,7 @@ public class UserController {
     @GetMapping("/getAllUsers/{page}")
     public Page<UserResponseDto> getAllUsers(@PathVariable(value = "page") int number) {
 
-        Pageable pageable = PageRequest.of(number-1, 5);
+        Pageable pageable = PageRequest.of(number - 1, 10);
         return userService.getAll(pageable);
     }
 
@@ -45,4 +46,8 @@ public class UserController {
     }
 
 
+    @GetMapping("/richUser")
+    public UserResponseDto getRichUser() {
+        return userService.getUserWithMostExpensiveOrder();
+    }
 }

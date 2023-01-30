@@ -5,6 +5,9 @@ import esm.dto.request.CertificateEditDto;
 import esm.dto.request.CertificateFindByDTO;
 import esm.dto.request.CertificateRequestDTO;
 import esm.dto.response.ResponseCertificateDTO;
+import esm.dto.response.TagResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -20,7 +23,7 @@ public interface CertificateService {
      */
 
 
-    List<ResponseCertificateDTO> listCertificates(CertificateFindByDTO certificateFindByDTO);
+    Page<ResponseCertificateDTO> listCertificates(CertificateFindByDTO certificateFindByDTO, Pageable pageable);
 
     /**
      * delete entity by id
@@ -60,11 +63,13 @@ public interface CertificateService {
 
     ResponseCertificateDTO editCertificate(CertificateRequestDTO certificateEditDto, int id);
 
-    List<ResponseCertificateDTO> findByTagName(String tagName);
+    Page<ResponseCertificateDTO> findByTagName(String tagName, Pageable pageable);
 
     ResponseCertificateDTO editOneField(CertificateEditDto certificateEditDto);
 
-    List<ResponseCertificateDTO> findByTagsNameList(List<String> tagNames);
+    Page<ResponseCertificateDTO> findByTagsNameList(List<String> tagNames,Pageable pageable);
+
+    Page<TagResponseDTO> popularTag();
 }
 
 

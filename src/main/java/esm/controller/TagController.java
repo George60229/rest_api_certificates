@@ -6,6 +6,9 @@ import esm.dto.response.TagResponseDTO;
 
 import esm.service.TagService;
 import esm.service.impl.TagServiceImpl;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +36,13 @@ public class TagController {
         return tagServiceImpl.createTag(tag);
     }
 
-    @GetMapping("/getAllTags")
-    public List<TagResponseDTO> getAllTags() {
-        return tagServiceImpl.getAllTags();
+    @GetMapping("/getAllTags/{page}")
+    public Page<TagResponseDTO> getAllTags(@PathVariable(value = "page") int number) {
+        Pageable pageable = PageRequest.of(number - 1, 10);
+        return tagServiceImpl.getAllTags(pageable);
     }
 
-    @DeleteMapping("/deleteTag/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteTagById(@PathVariable(value = "id") int id) {
         tagServiceImpl.deleteById(id);

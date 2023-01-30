@@ -1,15 +1,15 @@
 package esm.service.impl;
 
 
-import esm.converter.CertificateConverter;
 import esm.converter.UserConverter;
 import esm.dto.request.BuyCertificatesDto;
 import esm.dto.request.UserRequestDto;
+import esm.dto.response.TagResponseDTO;
 import esm.dto.response.UserResponseDto;
 import esm.exception.AppNotFoundException;
 import esm.exception.ErrorCode;
 import esm.model.GiftCertificate;
-import esm.model.Tag;
+import esm.model.Order;
 import esm.model.User;
 import esm.repository.CertificateRepository;
 import esm.repository.UserRepository;
@@ -19,10 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -43,17 +42,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto create(UserRequestDto user) {
 
-        List<GiftCertificate> result = new ArrayList<>();
-        for (int i = 0; i < user.getCertificates().size(); i++) {
-            List<GiftCertificate> giftCertificates = certificateRepository.findByName(user.getCertificates().get(i).getName());
-            if (!certificateRepository.findByName(user.getCertificates().get(i).getName()).isEmpty()) {
-                result.addAll(giftCertificates);
+        if (!user.getCertificates().isEmpty()) {
+            List<GiftCertificate> result = new ArrayList<>();
+            for (int i = 0; i < user.getCertificates().size(); i++) {
+                List<GiftCertificate> giftCertificates = certificateRepository.findByName(user.getCertificates().get(i).getName());
+                if (!certificateRepository.findByName(user.getCertificates().get(i).getName()).isEmpty()) {
+                    result.addAll(giftCertificates);
+                }
             }
+            user.setCertificates(result);
         }
-        if (result.isEmpty()) {
-            throw new AppNotFoundException("Certificates is not found", ErrorCode.CERTIFICATE_NOT_FOUND);
-        }
-        user.setCertificates(result);
+
         return converter.convertOneToDTO(userRepository.save(converter.convertDTOtoModel(user)));
     }
 
@@ -103,4 +102,16 @@ public class UserServiceImpl implements UserService {
         }
         return converter.convertOneToDTO(userOptional.get());
     }
+
+    @Override
+    public UserResponseDto getUserWithMostExpensiveOrder() {
+        List<BigDecimal> result = userRepository.findExpensiveOrder();
+        result.removeAll(Collections.singletonList(null));
+        BigDecimal maxPrice = Collections.max(result);
+        System.out.println(maxPrice);
+        return converter.convertOneToDTO(userRepository.findByOrders_PriceGreaterThanEqual(maxPrice));
+
+    }
+
+
 }
