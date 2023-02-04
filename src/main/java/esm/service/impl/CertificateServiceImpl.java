@@ -3,8 +3,8 @@ package esm.service.impl;
 
 import esm.converter.CertificateConverter;
 import esm.converter.TagConverter;
-import esm.dto.request.CertificateEditDto;
-import esm.dto.request.CertificateFindByDTO;
+import esm.dto.request.CertificateEditRequestDto;
+import esm.dto.request.CertificateFindByRequestDTO;
 import esm.dto.request.CertificateRequestDTO;
 import esm.dto.response.ResponseCertificateDTO;
 import esm.dto.response.TagResponseDTO;
@@ -20,9 +20,9 @@ import esm.service.CertificateService;
 import esm.utils.FindParameter;
 import esm.utils.SortParameter;
 import esm.utils.SortWay;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +67,7 @@ public class CertificateServiceImpl implements CertificateService {
         return converter.convertToDTO(giftCertificate);
     }
 
-
+    @Transactional
     @Override
     public ResponseCertificateDTO createCertificate(CertificateRequestDTO certificateDto) {
 
@@ -77,31 +77,37 @@ public class CertificateServiceImpl implements CertificateService {
 
 
     @Override
-    public Page<ResponseCertificateDTO> listCertificates(CertificateFindByDTO certificateFindByDTO, Pageable pageable) {
-        if (certificateFindByDTO == null) {
-            certificateFindByDTO = new CertificateFindByDTO();
+    public void setConverter(CertificateConverter converter, TagConverter tagConverter) {
+        this.converter=converter;
+        this.tagConverter=tagConverter;
+    }
+
+    @Override
+    public Page<ResponseCertificateDTO> listCertificates(CertificateFindByRequestDTO certificateFindByRequestDTO, Pageable pageable) {
+        if (certificateFindByRequestDTO == null) {
+            certificateFindByRequestDTO = new CertificateFindByRequestDTO();
         }
-        if (!certificateFindByDTO.getFindParameter().equals(FindParameter.DEFAULT) && certificateFindByDTO.getValue().equals("")) {
+        if (!certificateFindByRequestDTO.getFindParameter().equals(FindParameter.DEFAULT) && certificateFindByRequestDTO.getValue().equals("")) {
             throw new BadRequestException("Value must have FindParameter", ErrorCode.BAD_REQUEST_ERROR);
         }
         List<GiftCertificate> res;
 
-        if (certificateFindByDTO.getFindParameter().name().equals("DESCRIPTION")) {
-            res = certificateRepository.findByDescriptionLike(certificateFindByDTO.getValue());
-        } else if (certificateFindByDTO.getFindParameter().name().equals("NAME")) {
-            res = certificateRepository.findByNameLike(certificateFindByDTO.getValue());
+        if (certificateFindByRequestDTO.getFindParameter().name().equals("DESCRIPTION")) {
+            res = certificateRepository.findByDescriptionLike(certificateFindByRequestDTO.getValue());
+        } else if (certificateFindByRequestDTO.getFindParameter().name().equals("NAME")) {
+            res = certificateRepository.findByNameLike(certificateFindByRequestDTO.getValue());
         } else {
             res = certificateRepository.findAll();
         }
 
-        if (certificateFindByDTO.getSortParameter().equals(SortParameter.DATE)) {
-            if (certificateFindByDTO.getSortWay().equals(SortWay.DESC)) {
+        if (certificateFindByRequestDTO.getSortParameter().equals(SortParameter.DATE)) {
+            if (certificateFindByRequestDTO.getSortWay().equals(SortWay.DESC)) {
                 res = res.stream().sorted(Comparator.comparing(GiftCertificate::getCreateDate).reversed()).collect(Collectors.toList());
             } else
                 res = res.stream().sorted(Comparator.comparing(GiftCertificate::getCreateDate)).collect(Collectors.toList());
         }
-        if (certificateFindByDTO.getSortParameter().equals(SortParameter.NAME)) {
-            if (certificateFindByDTO.getSortWay().equals(SortWay.DESC)) {
+        if (certificateFindByRequestDTO.getSortParameter().equals(SortParameter.NAME)) {
+            if (certificateFindByRequestDTO.getSortWay().equals(SortWay.DESC)) {
                 res = res.stream().sorted(Comparator.comparing(GiftCertificate::getName).reversed()).collect(Collectors.toList());
             } else
                 res = res.stream().sorted(Comparator.comparing(GiftCertificate::getName)).collect(Collectors.toList());
@@ -130,13 +136,12 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public ResponseCertificateDTO editOneField(CertificateEditDto certificateEditDto) {
+    public ResponseCertificateDTO editOneField(CertificateEditRequestDto certificateEditRequestDto) {
 
-        if (certificateEditDto.getParameter() == null || certificateEditDto.getValue() == null
-                || certificateEditDto.getId() == 0) {
+        if (certificateEditRequestDto.getParameter() == null || certificateEditRequestDto.getValue() == null || certificateEditRequestDto.getId() == 0) {
             throw new BadRequestException("Value, id and parameter can't be null", ErrorCode.BAD_REQUEST_ERROR);
         }
-        int id = certificateEditDto.getId();
+        int id = certificateEditRequestDto.getId();
 
         Optional<GiftCertificate> certificate = certificateRepository.findById(id);
         if (certificate.isEmpty()) {
@@ -145,7 +150,7 @@ public class CertificateServiceImpl implements CertificateService {
         }
 
         GiftCertificate giftCertificate = certificate.get();
-        return converter.convertToDTO(certificateRepository.save(converter.updateByField(certificateEditDto, giftCertificate)));
+        return converter.convertToDTO(certificateRepository.save(converter.updateByField(certificateEditRequestDto, giftCertificate)));
     }
 
     @Override
@@ -161,9 +166,12 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public Page<TagResponseDTO> popularTag() {
-        Pageable pageable = PageRequest.of(0, 5);
-        return tagConverter.convert(certificateRepository.countByTagsName(pageable));
+    @Transactional
+    public TagResponseDTO popularTag() {
+
+        List<Tag> tags = certificateRepository.countByTagsName();
+        List<Tag> res = tags.stream().sorted(Comparator.comparingInt(Tag::getGiftCertificatesSize).reversed()).toList();
+        return tagConverter.convertOneToDTO(res.get(0));
     }
 
     private void create(CertificateRequestDTO certificateEditDto) {

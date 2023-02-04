@@ -1,6 +1,7 @@
 package esm.service;
 
 
+import esm.converter.TagConverter;
 import esm.dto.request.TagRequestDTO;
 import esm.dto.response.TagResponseDTO;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 public interface TagService {
 
+    void setConverter(TagConverter tagConverter);
 
     TagResponseDTO createTag(@RequestBody TagRequestDTO tagDTO);
 

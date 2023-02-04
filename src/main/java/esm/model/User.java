@@ -1,14 +1,16 @@
 package esm.model;
 
 import jakarta.persistence.*;
+import org.springframework.hateoas.RepresentationModel;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends RepresentationModel<User> {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Integer userId;
@@ -19,6 +21,7 @@ public class User {
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "id")})
     private List<Order> orders=new ArrayList<>();
+
 
     public Integer getUserId() {
         return userId;
@@ -46,6 +49,14 @@ public class User {
 
     public void addOrder(Order order) {
         this.orders.add(order);
+    }
+
+    public int getAllPrice(){
+        BigDecimal result=new BigDecimal(0);
+        for (Order order : orders) {
+            result = result.add(order.getPrice());
+        }
+        return result.intValue();
     }
 }
 

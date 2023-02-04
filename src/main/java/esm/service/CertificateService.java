@@ -1,8 +1,10 @@
 package esm.service;
 
 
-import esm.dto.request.CertificateEditDto;
-import esm.dto.request.CertificateFindByDTO;
+import esm.converter.CertificateConverter;
+import esm.converter.TagConverter;
+import esm.dto.request.CertificateEditRequestDto;
+import esm.dto.request.CertificateFindByRequestDTO;
 import esm.dto.request.CertificateRequestDTO;
 import esm.dto.response.ResponseCertificateDTO;
 import esm.dto.response.TagResponseDTO;
@@ -15,6 +17,8 @@ import java.util.List;
 
 public interface CertificateService {
 
+    public void setConverter(CertificateConverter converter, TagConverter tagConverter);
+
 
     /**
      * get all entity
@@ -23,7 +27,7 @@ public interface CertificateService {
      */
 
 
-    Page<ResponseCertificateDTO> listCertificates(CertificateFindByDTO certificateFindByDTO, Pageable pageable);
+    Page<ResponseCertificateDTO> listCertificates(CertificateFindByRequestDTO certificateFindByRequestDTO, Pageable pageable);
 
     /**
      * delete entity by id
@@ -65,11 +69,11 @@ public interface CertificateService {
 
     Page<ResponseCertificateDTO> findByTagName(String tagName, Pageable pageable);
 
-    ResponseCertificateDTO editOneField(CertificateEditDto certificateEditDto);
+    ResponseCertificateDTO editOneField(CertificateEditRequestDto certificateEditRequestDto);
 
     Page<ResponseCertificateDTO> findByTagsNameList(List<String> tagNames,Pageable pageable);
 
-    Page<TagResponseDTO> popularTag();
+    TagResponseDTO popularTag();
 }
 
 

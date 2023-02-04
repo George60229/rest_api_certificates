@@ -35,8 +35,11 @@ public class UserConverter {
     public User convertDTOtoModel(UserRequestDto userDTO) {
         User user = new User();
         user.setUsername(userDTO.getName());
-        Order order = getOrder(userDTO.getCertificates());
-        user.addOrder(order);
+        if(userDTO.getCertificates().size()!=0){
+            Order order = getOrder(userDTO.getCertificates());
+            user.addOrder(order);
+        }
+
         return user;
     }
 

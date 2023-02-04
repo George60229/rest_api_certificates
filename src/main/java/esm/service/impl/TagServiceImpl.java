@@ -32,6 +32,11 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
+    public void setConverter(TagConverter tagConverter) {
+        converter=tagConverter;
+    }
+
+    @Override
     public TagResponseDTO createTag(TagRequestDTO tagDTO) {
         return converter.convertOneToDTO(tagRepository.save(converter.convertDTOtoModel(tagDTO)));
     }

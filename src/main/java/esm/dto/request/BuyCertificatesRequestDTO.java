@@ -2,14 +2,14 @@ package esm.dto.request;
 
 import java.util.List;
 
-public class BuyCertificatesDto {
-    List<String> giftCertificates;
+public class BuyCertificatesRequestDTO {
+    List<String> certificates;
 
     public List<String> getGiftCertificates() {
-        return giftCertificates;
+        return certificates;
     }
 
     public void setGiftCertificates(List<String> giftCertificates) {
-        this.giftCertificates = giftCertificates;
+        this.certificates = giftCertificates;
     }
 }

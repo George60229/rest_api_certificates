@@ -1,12 +1,11 @@
 package esm.converter;
 
 
-import esm.dto.request.CertificateEditDto;
+import esm.dto.request.CertificateEditRequestDto;
 import esm.dto.request.CertificateRequestDTO;
 import esm.dto.response.ResponseCertificateDTO;
-import esm.dto.response.UserResponseDto;
 import esm.model.GiftCertificate;
-import esm.model.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
@@ -19,12 +18,20 @@ import java.util.stream.Collectors;
 
 @Component
 public class CertificateConverter {
+    @Autowired
+
+    TagConverter tagConverter;
+
+    public void setTagConverter(TagConverter tagConverter){
+        this.tagConverter=tagConverter;
+    }
 
     public Page<ResponseCertificateDTO> convertListToDTO(List<GiftCertificate> certificates) {
 
         return listToPage(certificates.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList()));
+        //see spring mapper todo
 
 
     }
@@ -36,7 +43,7 @@ public class CertificateConverter {
         responseCertificateDTO.setName(certificate.getName());
         responseCertificateDTO.setDescription(certificate.getDescription());
         responseCertificateDTO.setDuration(certificate.getDuration());
-        responseCertificateDTO.setTags(certificate.getTags());
+        responseCertificateDTO.setTags(tagConverter.convertWithList(certificate.getTags()));
         if (certificate.getCreateDate() != null) {
             responseCertificateDTO.setCreateDate(certificate.getCreateDate().toString());
         }
@@ -58,9 +65,9 @@ public class CertificateConverter {
         return giftCertificate;
     }
 
-    public GiftCertificate updateByField(CertificateEditDto certificateEditDto, GiftCertificate giftCertificate) {
-        String value = certificateEditDto.getValue();
-        switch (certificateEditDto.getParameter()) {
+    public GiftCertificate updateByField(CertificateEditRequestDto certificateEditRequestDto, GiftCertificate giftCertificate) {
+        String value = certificateEditRequestDto.getValue();
+        switch (certificateEditRequestDto.getParameter()) {
             case NAME -> giftCertificate.setName(value);
             case DESCRIPTION -> giftCertificate.setDescription(value);
             case PRICE -> giftCertificate.setPrice(BigDecimal.valueOf(Integer.parseInt(value)));
@@ -93,8 +100,8 @@ public class CertificateConverter {
         giftCertificate.setLastUpdateDate(LocalDateTime.now());
         return giftCertificate;
     }
-    public Page<ResponseCertificateDTO> listToPage(List<ResponseCertificateDTO> certificateResponseDto) {
 
+    public Page<ResponseCertificateDTO> listToPage(List<ResponseCertificateDTO> certificateResponseDto) {
         return new PageImpl<>(certificateResponseDto);
     }
 

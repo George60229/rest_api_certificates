@@ -1,8 +1,16 @@
 package esm.dto.request;
 
 
+public class CertificateEditRequestDto {
+    public CertificateEditRequestDto() {
+    }
 
-public class CertificateEditDto {
+    public CertificateEditRequestDto(String value, EditParameter parameter, int id) {
+        this.value = value;
+        this.parameter = parameter;
+        this.id = id;
+    }
+
     private String value;
     private EditParameter parameter;
 

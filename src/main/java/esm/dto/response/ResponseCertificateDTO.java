@@ -22,7 +22,7 @@ public class ResponseCertificateDTO {
     private String lastUpdateDate;
 
 
-    private List<Tag> tags = new ArrayList<>();
+    private List<TagResponseDTO> tags = new ArrayList<>();
 
     public Integer getCertificateId() {
         return certificateId;
@@ -80,11 +80,11 @@ public class ResponseCertificateDTO {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public List<Tag> getTags() {
+    public List<TagResponseDTO> getTags() {
         return tags;
     }
 
-    public void setTags(List<Tag> tags) {
+    public void setTags(List<TagResponseDTO> tags) {
         this.tags = tags;
     }
 

@@ -2,14 +2,12 @@ package esm.service.impl;
 
 
 import esm.converter.UserConverter;
-import esm.dto.request.BuyCertificatesDto;
+import esm.dto.request.BuyCertificatesRequestDTO;
 import esm.dto.request.UserRequestDto;
-import esm.dto.response.TagResponseDTO;
 import esm.dto.response.UserResponseDto;
 import esm.exception.AppNotFoundException;
 import esm.exception.ErrorCode;
 import esm.model.GiftCertificate;
-import esm.model.Order;
 import esm.model.User;
 import esm.repository.CertificateRepository;
 import esm.repository.UserRepository;
@@ -19,9 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -37,6 +33,11 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserRepository userRepository, CertificateRepository certificateRepository) {
         this.userRepository = userRepository;
         this.certificateRepository = certificateRepository;
+    }
+
+    @Override
+    public void setConverter(UserConverter converter) {
+        this.converter = converter;
     }
 
     @Override
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto addCertificate(BuyCertificatesDto name, int id) {
+    public UserResponseDto addCertificate(BuyCertificatesRequestDTO name, int id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
             throw new AppNotFoundException("User is not found " + id, ErrorCode.USER_NOT_FOUND);
@@ -78,19 +79,12 @@ public class UserServiceImpl implements UserService {
             }
 
         }
-
-
         myUser.addOrder(converter.getOrder(giftCertificates));
-
         userRepository.save(myUser);
-
-
         Optional<User> responseDto = userRepository.findById(id);
-
         if (responseDto.isEmpty()) {
             throw new AppNotFoundException("User with this id is not found " + id, ErrorCode.USER_NOT_FOUND);
         }
-
         return converter.convertOneToDTO(responseDto.get());
     }
 
@@ -105,11 +99,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto getUserWithMostExpensiveOrder() {
-        List<BigDecimal> result = userRepository.findExpensiveOrder();
+        List<User> result = userRepository.findExpensiveOrder();
         result.removeAll(Collections.singletonList(null));
-        BigDecimal maxPrice = Collections.max(result);
-        System.out.println(maxPrice);
-        return converter.convertOneToDTO(userRepository.findByOrders_PriceGreaterThanEqual(maxPrice));
+        List<User> res = result.stream().sorted(Comparator.comparingInt(User::getAllPrice).reversed()).toList();
+        return converter.convertOneToDTO(res.get(0));
 
     }
 

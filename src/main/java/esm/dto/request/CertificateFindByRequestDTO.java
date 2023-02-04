@@ -5,7 +5,8 @@ import esm.utils.FindParameter;
 import esm.utils.SortParameter;
 import esm.utils.SortWay;
 
-public class CertificateFindByDTO {
+public class CertificateFindByRequestDTO {
+
     private SortWay sortWay = SortWay.ASC;
     private SortParameter sortParameter = SortParameter.DATE;
 

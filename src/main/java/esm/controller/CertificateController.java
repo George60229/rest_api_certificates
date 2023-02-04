@@ -1,20 +1,25 @@
 package esm.controller;
 
 
-import esm.dto.request.CertificateEditDto;
-import esm.dto.request.CertificateFindByDTO;
-import esm.dto.request.CertificateRequestDTO;
-import esm.dto.request.FindByTagDto;
+import esm.dto.request.*;
 import esm.dto.response.ResponseCertificateDTO;
 import esm.dto.response.TagResponseDTO;
+import esm.exception.BadRequestException;
+import esm.exception.ErrorCode;
 import esm.service.CertificateService;
 import esm.service.impl.CertificateServiceImpl;
+import esm.urlCreator.CertificateUrlCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,24 +29,61 @@ public class CertificateController {
 
     private final CertificateService certificateServiceBean;
 
+    @Autowired
+    CertificateUrlCreator certificateUrlCreator;
+
     public CertificateController(CertificateServiceImpl certificateServiceBean) {
         this.certificateServiceBean = certificateServiceBean;
     }
 
     @GetMapping("/{id}")
-    public ResponseCertificateDTO getCertificateById(@PathVariable(value = "id") int id) {
-        return certificateServiceBean.getCertificateById(id);
+    public CollectionModel<ResponseCertificateDTO> getCertificateById(@PathVariable(value = "id") int id) {
+        List<ResponseCertificateDTO> list = new ArrayList<>();
+        list.add(certificateServiceBean.getCertificateById(id));
+
+        List<Link> links = new ArrayList<>();
+        links.add(certificateUrlCreator.findPopularTag());
+
+
+        return CollectionModel.of(list, links);
+
     }
 
     @PostMapping("/addCertificate")
-    public ResponseCertificateDTO addCertificate(@RequestBody CertificateRequestDTO giftCertificate) {
-        return certificateServiceBean.createCertificate(giftCertificate);
+    public CollectionModel<ResponseCertificateDTO> addCertificate(@RequestBody CertificateRequestDTO giftCertificate) {
+        List<ResponseCertificateDTO> list = new ArrayList<>();
+        list.add(certificateServiceBean.createCertificate(giftCertificate));
+
+        List<Link> links = new ArrayList<>();
+        links.add(certificateUrlCreator.findPopularTag());
+
+        return CollectionModel.of(list, links);
+
+    }
+
+    @GetMapping("/getAllTags")
+    public CollectionModel<ResponseCertificateDTO> getAllCertificates(@RequestBody CertificateFindByRequestDTO
+                                                                              certificateFindByRequestDTO,
+                                                                      @PageableDefault Pageable pageable) {
+
+
+        Page<ResponseCertificateDTO> tags = certificateServiceBean.listCertificates(certificateFindByRequestDTO, pageable);
+
+        List<Link> links = new ArrayList<>();
+        links.add(certificateUrlCreator.findPopularTag());
+
+        return CollectionModel.of(tags, links);
     }
 
     @GetMapping("/getAllCertificates/{page}")
-    public Page<ResponseCertificateDTO> getAllCertificate(@PathVariable(value = "page") int number,@RequestBody CertificateFindByDTO certificateFindByDTO) {
-        Pageable pageable = PageRequest.of(number - 1, 5);
-        return certificateServiceBean.listCertificates(certificateFindByDTO,pageable);
+    public CollectionModel<ResponseCertificateDTO> getAllCertificatesWithPage(@PathVariable(value = "page") int page, CertificateFindByRequestDTO certificateFindByRequestDTO) {
+        Pageable pageable = PageRequest.of(page - 1, 10);
+        Page<ResponseCertificateDTO> list = certificateServiceBean.listCertificates(certificateFindByRequestDTO, pageable);
+        List<Link> links = new ArrayList<>();
+        links.add(certificateUrlCreator.findPopularTag());
+
+
+        return CollectionModel.of(list, links);
     }
 
     @DeleteMapping("/{id}")
@@ -52,35 +94,77 @@ public class CertificateController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseCertificateDTO editById(@RequestBody CertificateRequestDTO certificateRequestDTO, @PathVariable(value = "id") int id) {
-        return certificateServiceBean.editCertificate(certificateRequestDTO, id);
+    public CollectionModel<ResponseCertificateDTO> editById(@RequestBody CertificateRequestDTO certificateRequestDTO, @PathVariable(value = "id") int id) {
+        List<ResponseCertificateDTO> list = new ArrayList<>();
+        list.add(certificateServiceBean.editCertificate(certificateRequestDTO, id));
+
+        List<Link> links = new ArrayList<>();
+        links.add(certificateUrlCreator.findPopularTag());
+
+        return CollectionModel.of(list, links);
     }
 
-    @GetMapping("/findByTag/{name}/{page}")
+    @GetMapping("/findByTag/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public Page<ResponseCertificateDTO> findByTag(@PathVariable(value = "name") String name ,@PathVariable(value = "page") int number) {
-        Pageable pageable = PageRequest.of(number - 1, 5);
-        return certificateServiceBean.findByTagName(name,pageable);
+    public CollectionModel<ResponseCertificateDTO> findByTag(@PathVariable(value = "name") String name,
+                                                             @RequestBody RequestPage requestPage) {
+
+        Pageable pageable = PageRequest.of(defaultPagination(requestPage) - 1, 10);
+        Page<ResponseCertificateDTO> list = (certificateServiceBean.findByTagName(
+                name, pageable));
+
+
+        List<Link> links = new ArrayList<>();
+        links.add(certificateUrlCreator.findPopularTag());
+
+        return CollectionModel.of(list, links);
     }
 
     @PutMapping("/editOneField")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseCertificateDTO editCertificateByParameter(@RequestBody CertificateEditDto certificateEditDto) {
-        return certificateServiceBean.editOneField(certificateEditDto);
+    public CollectionModel<ResponseCertificateDTO> editCertificateByParameter(@RequestBody CertificateEditRequestDto certificateEditRequestDto) {
+        List<ResponseCertificateDTO> list = new ArrayList<>();
+        list.add(certificateServiceBean.editOneField(certificateEditRequestDto));
+
+        List<Link> links = new ArrayList<>();
+        links.add(certificateUrlCreator.findPopularTag());
+        return CollectionModel.of(list, links);
 
     }
 
-    @GetMapping("/findByTags/{page}")
+    @GetMapping("/findByTags")
     @ResponseStatus(HttpStatus.OK)
-    public Page<ResponseCertificateDTO> findByTagList(@RequestBody FindByTagDto tagNames,@PathVariable(value = "page") int number) {
-        Pageable pageable = PageRequest.of(number - 1, 5);
-        return certificateServiceBean.findByTagsNameList(tagNames.getTagNames(),pageable);
+    public CollectionModel<ResponseCertificateDTO> findByTagList(@RequestBody FindByTagRequestDto tagNames,
+                                                                 @RequestBody RequestPage requestPage) {
+        Pageable pageable = PageRequest.of(defaultPagination(requestPage) - 1, 10);
+        Page<ResponseCertificateDTO> list = (certificateServiceBean.findByTagsNameList(
+                tagNames.getTagNames(), pageable));
+
+        List<Link> links = new ArrayList<>();
+        links.add(certificateUrlCreator.findPopularTag());
+
+        return CollectionModel.of(list, links);
     }
 
     @GetMapping("/findPopularTag")
-    public Page<TagResponseDTO> popularTag(){
-        return certificateServiceBean.popularTag();
+    public CollectionModel<TagResponseDTO> popularTag() {
+        List<TagResponseDTO> list = new ArrayList<>();
+        list.add(certificateServiceBean.popularTag());
+
+        List<Link> links = new ArrayList<>();
+        links.add(certificateUrlCreator.findPopularTag());
+
+        return CollectionModel.of(list, links);
     }
 
-
+    private int defaultPagination(RequestPage requestPage) {
+        int number = requestPage.getPage();
+        if (requestPage.getPage() < 0) {
+            throw new BadRequestException("Page must be positive", ErrorCode.BAD_REQUEST_ERROR);
+        }
+        if (number == 0) {
+            number = 1;
+        }
+        return number;
+    }
 }

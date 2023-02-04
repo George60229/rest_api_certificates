@@ -21,6 +21,13 @@ public class TagConverter {
 
     }
 
+    public List<TagResponseDTO> convertWithList(List<Tag> tags) {
+        return tags.stream()
+                .map(this::convertOneToDTO)
+                .collect(Collectors.toList());
+
+    }
+
     public TagResponseDTO convertOneToDTO(Tag tag) {
         TagResponseDTO tagResponseDTO = new TagResponseDTO();
         tagResponseDTO.setId(tag.getId());
