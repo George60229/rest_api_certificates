@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -14,14 +16,15 @@ public class Order {
     LocalDateTime orderDate;
     BigDecimal price;
 
-    String name;
+    @ManyToMany(fetch = FetchType.EAGER)
+    List<GiftCertificate> certificateList = new ArrayList<>();
 
-    public String getName() {
-        return name;
+    public List<GiftCertificate> getCertificateList() {
+        return certificateList;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCertificateList(List<GiftCertificate> certificateList) {
+        this.certificateList = certificateList;
     }
 
     public int getId() {

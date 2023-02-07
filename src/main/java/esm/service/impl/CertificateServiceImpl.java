@@ -78,18 +78,26 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public void setConverter(CertificateConverter converter, TagConverter tagConverter) {
-        this.converter=converter;
-        this.tagConverter=tagConverter;
+        this.converter = converter;
+        this.tagConverter = tagConverter;
     }
 
     @Override
-    public Page<ResponseCertificateDTO> listCertificates(CertificateFindByRequestDTO certificateFindByRequestDTO, Pageable pageable) {
+    public Page<ResponseCertificateDTO> listCertificates(CertificateFindByRequestDTO certificateFindByRequestDTO,
+                                                         Pageable pageable) {
         if (certificateFindByRequestDTO == null) {
             certificateFindByRequestDTO = new CertificateFindByRequestDTO();
         }
-        if (!certificateFindByRequestDTO.getFindParameter().equals(FindParameter.DEFAULT) && certificateFindByRequestDTO.getValue().equals("")) {
+        if (!certificateFindByRequestDTO.getFindParameter().equals(FindParameter.DEFAULT)
+                && certificateFindByRequestDTO.getValue().equals("")) {
             throw new BadRequestException("Value must have FindParameter", ErrorCode.BAD_REQUEST_ERROR);
         }
+        if (certificateFindByRequestDTO.getFindParameter().equals(FindParameter.DEFAULT)
+                && !certificateFindByRequestDTO.getValue().equals("")) {
+            throw new BadRequestException("FindParameter must be here", ErrorCode.BAD_REQUEST_ERROR);
+        }
+
+
         List<GiftCertificate> res;
 
         if (certificateFindByRequestDTO.getFindParameter().name().equals("DESCRIPTION")) {
@@ -99,6 +107,7 @@ public class CertificateServiceImpl implements CertificateService {
         } else {
             res = certificateRepository.findAll();
         }
+
 
         if (certificateFindByRequestDTO.getSortParameter().equals(SortParameter.DATE)) {
             if (certificateFindByRequestDTO.getSortWay().equals(SortWay.DESC)) {
@@ -113,6 +122,9 @@ public class CertificateServiceImpl implements CertificateService {
                 res = res.stream().sorted(Comparator.comparing(GiftCertificate::getName)).collect(Collectors.toList());
         }
 
+        if (res.size() > pageable.getPageSize()) {
+            res = res.subList(pageable.getPageNumber() * pageable.getPageSize(), (pageable.getPageNumber() + 1) * pageable.getPageSize());
+        }
 
         return converter.convertListToDTO(res);
     }

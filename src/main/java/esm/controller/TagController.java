@@ -1,11 +1,8 @@
 package esm.controller;
 
 
-import esm.dto.request.RequestPage;
 import esm.dto.request.TagRequestDTO;
 import esm.dto.response.TagResponseDTO;
-
-import esm.dto.response.UserResponseDto;
 import esm.exception.BadRequestException;
 import esm.exception.ErrorCode;
 import esm.service.TagService;
@@ -19,14 +16,13 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/tag", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/tag")
 public class TagController {
     @Autowired
     TagUrlCreator tagUrlCreator;
@@ -80,6 +76,9 @@ public class TagController {
 
     @GetMapping("/getAllTags/{page}")
     public CollectionModel<TagResponseDTO> getAllTagsWithPage(@PathVariable(value = "page") int page) {
+        if (page <= 0) {
+            throw new BadRequestException("Page must be positive", ErrorCode.BAD_REQUEST_ERROR);
+        }
         Pageable pageable = PageRequest.of(page - 1, 10);
         Page<TagResponseDTO> list = tagServiceImpl.getAllTags(pageable);
         List<Link> links = new ArrayList<>();

@@ -4,6 +4,7 @@ package esm.service.impl;
 import esm.converter.UserConverter;
 import esm.dto.request.BuyCertificatesRequestDTO;
 import esm.dto.request.UserRequestDto;
+import esm.dto.response.UserInfoResponseDto;
 import esm.dto.response.UserResponseDto;
 import esm.exception.AppNotFoundException;
 import esm.exception.ErrorCode;
@@ -36,12 +37,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponseDto getUserOrders(int id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty()) {
+            throw new AppNotFoundException("User with this id is not found " + id, ErrorCode.USER_NOT_FOUND);
+        }
+        return converter.convertOneToDTO(userOptional.get());
+    }
+
+    @Override
     public void setConverter(UserConverter converter) {
         this.converter = converter;
     }
 
     @Override
-    public UserResponseDto create(UserRequestDto user) {
+    public UserInfoResponseDto create(UserRequestDto user) {
 
         if (!user.getCertificates().isEmpty()) {
             List<GiftCertificate> result = new ArrayList<>();
@@ -54,7 +64,7 @@ public class UserServiceImpl implements UserService {
             user.setCertificates(result);
         }
 
-        return converter.convertOneToDTO(userRepository.save(converter.convertDTOtoModel(user)));
+        return converter.convertOneToInfoDTO((userRepository.save(converter.convertDTOtoModel(user))));
     }
 
     @Override
@@ -70,15 +80,17 @@ public class UserServiceImpl implements UserService {
         }
         User myUser = user.get();
         List<GiftCertificate> giftCertificates = new ArrayList<>();
+        String[] certificates = name.getCertificates();
 
-        for (int i = 0; i < name.getGiftCertificates().size(); i++) {
-            if (certificateRepository.findByName(name.getGiftCertificates().get(i)).isEmpty()) {
-                throw new AppNotFoundException("Certificate is not found with this name " + name.getGiftCertificates().get(i), ErrorCode.CERTIFICATE_NOT_FOUND);
+        for (String certificate : certificates) {
+            if (certificateRepository.findByName(certificate).isEmpty()) {
+                throw new AppNotFoundException("Certificate is not found with this name " + certificate, ErrorCode.CERTIFICATE_NOT_FOUND);
             } else {
-                giftCertificates.addAll(certificateRepository.findByName(name.getGiftCertificates().get(i)));
+                giftCertificates.addAll(certificateRepository.findByName(certificate));
             }
 
         }
+
         myUser.addOrder(converter.getOrder(giftCertificates));
         userRepository.save(myUser);
         Optional<User> responseDto = userRepository.findById(id);
@@ -89,12 +101,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto getUserById(int id) {
+    public UserInfoResponseDto getUserById(int id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isEmpty()) {
             throw new AppNotFoundException("User with this id is not found " + id, ErrorCode.USER_NOT_FOUND);
         }
-        return converter.convertOneToDTO(userOptional.get());
+        return converter.convertOneToInfoDTO(userOptional.get());
     }
 
     @Override
@@ -104,6 +116,12 @@ public class UserServiceImpl implements UserService {
         List<User> res = result.stream().sorted(Comparator.comparingInt(User::getAllPrice).reversed()).toList();
         return converter.convertOneToDTO(res.get(0));
 
+    }
+
+    @Override
+    public Page<UserInfoResponseDto> getUserInfo(Pageable pageable) {
+        Page<User> users = userRepository.findAll(pageable);
+        return converter.convertToInfo(users);
     }
 
 

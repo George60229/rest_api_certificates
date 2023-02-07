@@ -1,6 +1,7 @@
 package esm.converter;
 
 import esm.dto.request.UserRequestDto;
+import esm.dto.response.UserInfoResponseDto;
 import esm.dto.response.UserResponseDto;
 import esm.model.GiftCertificate;
 import esm.model.Order;
@@ -24,6 +25,13 @@ public class UserConverter {
 
     }
 
+    public Page<UserInfoResponseDto> convertToInfo(Page<User> users) {
+        return listToInfoPage(users.stream()
+                .map(this::convertOneToInfoDTO)
+                .collect(Collectors.toList()));
+
+    }
+
     public UserResponseDto convertOneToDTO(User user) {
         UserResponseDto userResponseDTO = new UserResponseDto();
         userResponseDTO.setUserId(user.getUserId());
@@ -35,7 +43,8 @@ public class UserConverter {
     public User convertDTOtoModel(UserRequestDto userDTO) {
         User user = new User();
         user.setUsername(userDTO.getName());
-        if(userDTO.getCertificates().size()!=0){
+        user.setSurname(userDTO.getSurname());
+        if (userDTO.getCertificates().size() != 0) {
             Order order = getOrder(userDTO.getCertificates());
             user.addOrder(order);
         }
@@ -43,25 +52,41 @@ public class UserConverter {
         return user;
     }
 
+
     public Page<UserResponseDto> listToPage(List<UserResponseDto> userResponseDto) {
+
+        return new PageImpl<>(userResponseDto);
+    }
+
+    public Page<UserInfoResponseDto> listToInfoPage(List<UserInfoResponseDto> userResponseDto) {
 
         return new PageImpl<>(userResponseDto);
     }
 
     public Order getOrder(List<GiftCertificate> giftCertificates) {
         Order order = new Order();
-        StringBuilder stringBuilder = new StringBuilder();
+
         BigDecimal price = new BigDecimal(0);
         for (GiftCertificate giftCertificate : giftCertificates) {
             if (giftCertificate.getPrice() != null) {
                 price = price.add(giftCertificate.getPrice());
             }
-            stringBuilder.append("||").append(giftCertificate.getName());
         }
+
         order.setPrice(price);
         order.setOrderDate(LocalDateTime.now());
-        order.setName(stringBuilder.toString());
+
         return order;
     }
+
+    public UserInfoResponseDto convertOneToInfoDTO(User user) {
+        UserInfoResponseDto userResponseDTO = new UserInfoResponseDto();
+        userResponseDTO.setUserId(user.getUserId());
+        userResponseDTO.setUsername(user.getUsername());
+
+        userResponseDTO.setSurname(user.getSurname());
+        return userResponseDTO;
+    }
+
 }
 

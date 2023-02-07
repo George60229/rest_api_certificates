@@ -1,6 +1,5 @@
 package esm.dto.response;
 
-import esm.model.GiftCertificate;
 import esm.model.Order;
 
 import java.util.List;

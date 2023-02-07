@@ -16,11 +16,15 @@ public class User extends RepresentationModel<User> {
     Integer userId;
     String username;
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    String surname;
+
+    String password;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_orders",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "id")})
-    private List<Order> orders=new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();
 
 
     public Integer getUserId() {
@@ -51,8 +55,24 @@ public class User extends RepresentationModel<User> {
         this.orders.add(order);
     }
 
-    public int getAllPrice(){
-        BigDecimal result=new BigDecimal(0);
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getAllPrice() {
+        BigDecimal result = new BigDecimal(0);
         for (Order order : orders) {
             result = result.add(order.getPrice());
         }

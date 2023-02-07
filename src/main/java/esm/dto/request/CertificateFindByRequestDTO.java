@@ -7,11 +7,21 @@ import esm.utils.SortWay;
 
 public class CertificateFindByRequestDTO {
 
+    private int page;
+
     private SortWay sortWay = SortWay.ASC;
     private SortParameter sortParameter = SortParameter.DATE;
 
     private FindParameter findParameter = FindParameter.DEFAULT;
     private String value = "";
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
 
     public SortWay getSortWay() {
         return sortWay;

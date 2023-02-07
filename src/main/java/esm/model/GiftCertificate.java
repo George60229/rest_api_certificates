@@ -29,6 +29,8 @@ public class GiftCertificate {
     private List<Tag> tags=new ArrayList<>();
 
 
+
+
     public Integer getId() {
         return certificateId;
     }

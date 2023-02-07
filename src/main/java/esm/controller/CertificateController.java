@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
@@ -61,28 +60,16 @@ public class CertificateController {
 
     }
 
-    @GetMapping("/getAllTags")
-    public CollectionModel<ResponseCertificateDTO> getAllCertificates(@RequestBody CertificateFindByRequestDTO
-                                                                              certificateFindByRequestDTO,
-                                                                      @PageableDefault Pageable pageable) {
+    @GetMapping("/getAllCertificates")
+    public CollectionModel<ResponseCertificateDTO> getAllCertificatesWithPage(@RequestBody CertificateFindByRequestDTO
+                                                                                      certificateFindByRequestDTO) {
+        Pageable pageable = PageRequest.of(certificateFindByRequestDTO.getPage(), 10);
+        Page<ResponseCertificateDTO> list = certificateServiceBean.listCertificates(certificateFindByRequestDTO,
+                pageable);
 
-
-        Page<ResponseCertificateDTO> tags = certificateServiceBean.listCertificates(certificateFindByRequestDTO, pageable);
 
         List<Link> links = new ArrayList<>();
         links.add(certificateUrlCreator.findPopularTag());
-
-        return CollectionModel.of(tags, links);
-    }
-
-    @GetMapping("/getAllCertificates/{page}")
-    public CollectionModel<ResponseCertificateDTO> getAllCertificatesWithPage(@PathVariable(value = "page") int page, CertificateFindByRequestDTO certificateFindByRequestDTO) {
-        Pageable pageable = PageRequest.of(page - 1, 10);
-        Page<ResponseCertificateDTO> list = certificateServiceBean.listCertificates(certificateFindByRequestDTO, pageable);
-        List<Link> links = new ArrayList<>();
-        links.add(certificateUrlCreator.findPopularTag());
-
-
         return CollectionModel.of(list, links);
     }
 
@@ -134,9 +121,8 @@ public class CertificateController {
 
     @GetMapping("/findByTags")
     @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<ResponseCertificateDTO> findByTagList(@RequestBody FindByTagRequestDto tagNames,
-                                                                 @RequestBody RequestPage requestPage) {
-        Pageable pageable = PageRequest.of(defaultPagination(requestPage) - 1, 10);
+    public CollectionModel<ResponseCertificateDTO> findByTagList(@RequestBody FindByTagRequestDto tagNames) {
+        Pageable pageable = PageRequest.of(tagNames.getPage(), 10);
         Page<ResponseCertificateDTO> list = (certificateServiceBean.findByTagsNameList(
                 tagNames.getTagNames(), pageable));
 
@@ -152,7 +138,7 @@ public class CertificateController {
         list.add(certificateServiceBean.popularTag());
 
         List<Link> links = new ArrayList<>();
-        links.add(certificateUrlCreator.findPopularTag());
+
 
         return CollectionModel.of(list, links);
     }

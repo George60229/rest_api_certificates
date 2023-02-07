@@ -8,7 +8,11 @@ import java.util.List;
 public class UserRequestDto {
     String name;
 
-    List<GiftCertificate> certificates=new ArrayList<>();
+    String surname;
+
+    String password;
+
+    List<GiftCertificate> certificates = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -24,5 +28,21 @@ public class UserRequestDto {
 
     public void setCertificates(List<GiftCertificate> certificates) {
         this.certificates = certificates;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
