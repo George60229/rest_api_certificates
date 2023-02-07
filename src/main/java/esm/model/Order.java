@@ -18,7 +18,6 @@ public class Order {
     BigDecimal price;
 
 
-
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(name = "certificates_orders",
             joinColumns = {@JoinColumn(name = "order_id")},

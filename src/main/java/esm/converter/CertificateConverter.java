@@ -39,7 +39,7 @@ public class CertificateConverter {
 
     public ResponseCertificateDTO convertToDTO(GiftCertificate certificate) {
         ResponseCertificateDTO responseCertificateDTO = new ResponseCertificateDTO();
-        responseCertificateDTO.setCertificateId(certificate.getId());
+        responseCertificateDTO.setCertificateId(certificate.getCertificateId());
         responseCertificateDTO.setName(certificate.getName());
         responseCertificateDTO.setDescription(certificate.getDescription());
         responseCertificateDTO.setDuration(certificate.getDuration());

@@ -41,7 +41,7 @@ public class Tag extends RepresentationModel<Tag> {
         this.name = name;
     }
 
-
+@JsonIgnore
     public int getGiftCertificatesSize() {
         return giftCertificates.size();
     }

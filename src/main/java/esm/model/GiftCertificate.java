@@ -54,13 +54,6 @@ public class GiftCertificate {
         this.orders = orders;
     }
 
-    public Integer getId() {
-        return certificateId;
-    }
-
-    public void setId(Integer id) {
-        this.certificateId = id;
-    }
 
     public String getName() {
         if(this.name==null){
@@ -124,7 +117,7 @@ public class GiftCertificate {
     public void setTag(Tag tag) {
         this.tags.add(tag);
     }
-
+    @JsonIgnore
     public List<String> getTagNames() {
        return tags.stream()
                 .map(Tag::getName)
