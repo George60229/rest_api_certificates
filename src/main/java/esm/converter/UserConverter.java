@@ -72,7 +72,7 @@ public class UserConverter {
                 price = price.add(giftCertificate.getPrice());
             }
         }
-
+        order.setGiftCertificates(giftCertificates);
         order.setPrice(price);
         order.setOrderDate(LocalDateTime.now());
 

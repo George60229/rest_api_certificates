@@ -92,6 +92,8 @@ public class UserServiceImpl implements UserService {
         }
 
         myUser.addOrder(converter.getOrder(giftCertificates));
+
+
         userRepository.save(myUser);
         Optional<User> responseDto = userRepository.findById(id);
         if (responseDto.isEmpty()) {

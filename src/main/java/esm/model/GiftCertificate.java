@@ -1,6 +1,7 @@
 package esm.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -29,7 +30,29 @@ public class GiftCertificate {
     private List<Tag> tags=new ArrayList<>();
 
 
+@JsonIgnore
+    @ManyToMany(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
+    @JoinTable(name = "certificates_orders",
+            joinColumns = {@JoinColumn(name = "certificate_id")},
+            inverseJoinColumns = {@JoinColumn(name = "order_id")})
+    private List<Order> orders=new ArrayList<>();
 
+
+    public Integer getCertificateId() {
+        return certificateId;
+    }
+
+    public void setCertificateId(Integer certificateId) {
+        this.certificateId = certificateId;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
 
     public Integer getId() {
         return certificateId;
@@ -45,7 +68,7 @@ public class GiftCertificate {
         }
         return name;
     }
-//todo fix postman all is not works
+
     public void setName(String name) {
         this.name = name;
     }

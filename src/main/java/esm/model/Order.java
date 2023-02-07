@@ -1,5 +1,6 @@
 package esm.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -16,15 +17,20 @@ public class Order {
     LocalDateTime orderDate;
     BigDecimal price;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    List<GiftCertificate> certificateList = new ArrayList<>();
 
-    public List<GiftCertificate> getCertificateList() {
-        return certificateList;
+
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinTable(name = "certificates_orders",
+            joinColumns = {@JoinColumn(name = "order_id")},
+            inverseJoinColumns = {@JoinColumn(name = "certificate_id")})
+    private List<GiftCertificate> giftCertificates = new ArrayList<>();
+
+    public List<GiftCertificate> getGiftCertificates() {
+        return giftCertificates;
     }
 
-    public void setCertificateList(List<GiftCertificate> certificateList) {
-        this.certificateList = certificateList;
+    public void setGiftCertificates(List<GiftCertificate> giftCertificates) {
+        this.giftCertificates = giftCertificates;
     }
 
     public int getId() {

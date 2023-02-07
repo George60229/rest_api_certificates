@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FindByTagRequestDto {
+
     List<String> tagNames=new ArrayList<>();
 
     int page=0;
