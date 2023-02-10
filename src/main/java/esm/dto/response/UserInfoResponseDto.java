@@ -3,6 +3,7 @@ package esm.dto.response;
 import esm.model.Role;
 
 import javax.persistence.Column;
+import java.util.List;
 import java.util.Set;
 
 public class UserInfoResponseDto {
@@ -12,8 +13,15 @@ public class UserInfoResponseDto {
 
     String surname;
 
+    String password;
 
+    public String getPassword() {
+        return password;
+    }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getLogin() {
         return login;
@@ -23,13 +31,13 @@ public class UserInfoResponseDto {
         this.login = login;
     }
 
-    private Set<Role> roles;
+    private List<Role> roles;
 
-    public Set<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
     String login;

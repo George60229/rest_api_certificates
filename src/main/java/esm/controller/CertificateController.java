@@ -36,6 +36,7 @@ public class CertificateController {
         this.certificateServiceBean = certificateServiceBean;
     }
 
+
     @GetMapping("/{id}")
     public CollectionModel<ResponseCertificateDTO> getCertificateById(@PathVariable(value = "id") int id) {
         List<ResponseCertificateDTO> list = new ArrayList<>();
@@ -49,6 +50,8 @@ public class CertificateController {
 
     }
 
+
+
     @PostMapping("/addCertificate")
     public CollectionModel<ResponseCertificateDTO> addCertificate(@RequestBody CertificateRequestDTO giftCertificate) {
         List<ResponseCertificateDTO> list = new ArrayList<>();
@@ -61,7 +64,7 @@ public class CertificateController {
 
     }
 
-    @RolesAllowed("ADMIN")
+
     @GetMapping("/getAllCertificates")
     public CollectionModel<ResponseCertificateDTO> getAllCertificatesWithPage(@RequestBody CertificateFindByRequestDTO
                                                                                       certificateFindByRequestDTO) {
@@ -75,11 +78,13 @@ public class CertificateController {
         return CollectionModel.of(list, links);
     }
 
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteCertificateById(@PathVariable(value = "id") Integer id) {
         certificateServiceBean.deleteCertificateById(id);
     }
+
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)

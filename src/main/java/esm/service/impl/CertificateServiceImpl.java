@@ -39,7 +39,6 @@ public class CertificateServiceImpl implements CertificateService {
 
     public CertificateServiceImpl(CertificateRepository certificateRepository, TagRepository tagRepository) {
         this.certificateRepository = certificateRepository;
-
         this.tagRepository = tagRepository;
     }
 

@@ -20,7 +20,6 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +68,8 @@ public class UserController {
 
         return CollectionModel.of(list, links);
     }
-    @RolesAllowed("ADMIN")
+
+
     @GetMapping("/getAllUsers")
     public CollectionModel<UserInfoResponseDto> getAllUsers(@PageableDefault Pageable pageable) {
 
@@ -122,16 +122,16 @@ public class UserController {
     }
 
     @GetMapping("/orders/{id}/{order_id}")
-    public CollectionModel<Order> getOrderById(@PathVariable(value = "id") int id,@PathVariable
+    public CollectionModel<Order> getOrderById(@PathVariable(value = "id") int id, @PathVariable
             (value = "order_id") int orderId) {
 
         List<UserResponseDto> list = new ArrayList<>();
 
         list.add(userService.getUserOrders(id));
 
-        List<Order> orders=new ArrayList<>();
-        for (int i = 0; i <list.get(0).getOrders().size() ; i++) {
-            if(list.get(0).getOrders().get(i).getId()==orderId){
+        List<Order> orders = new ArrayList<>();
+        for (int i = 0; i < list.get(0).getOrders().size(); i++) {
+            if (list.get(0).getOrders().get(i).getId() == orderId) {
                 orders.add(list.get(0).getOrders().get(i));
             }
         }
@@ -145,7 +145,6 @@ public class UserController {
         return CollectionModel.of(orders, links);
 
     }
-
 
 
     @GetMapping("/{id}")

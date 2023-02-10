@@ -8,20 +8,19 @@ import org.springframework.security.core.GrantedAuthority;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
     @Id
-    private Long id;
-
+    private Long roleId;
+    
     private String name;
     @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "user_role",
-            joinColumns = {@JoinColumn(name = "id")},
+            joinColumns = {@JoinColumn(name = "role_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")})
     private List<GiftCertificate> users = new ArrayList<>();
 
@@ -34,7 +33,7 @@ public class Role implements GrantedAuthority {
     }
 
     public Role(long l, String roleUser) {
-        id = l;
+        roleId = l;
         name = roleUser;
     }
 
@@ -44,11 +43,11 @@ public class Role implements GrantedAuthority {
 
 
     public Long getId() {
-        return id;
+        return roleId;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.roleId = id;
     }
 
     public String getName() {
@@ -59,7 +58,7 @@ public class Role implements GrantedAuthority {
         this.name = name;
     }
 
-
+    @JsonIgnore
     @Override
     public String getAuthority() {
         return getName();

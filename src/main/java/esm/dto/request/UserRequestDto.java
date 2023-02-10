@@ -3,10 +3,8 @@ package esm.dto.request;
 import esm.model.GiftCertificate;
 import esm.model.Role;
 
-import javax.persistence.Column;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class UserRequestDto {
     String name;
@@ -22,13 +20,13 @@ public class UserRequestDto {
         this.login = login;
     }
 
-    private Set<Role> roles;
+    private List<Role> roles;
 
-    public Set<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
     String login;

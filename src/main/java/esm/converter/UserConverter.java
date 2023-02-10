@@ -45,6 +45,10 @@ public class UserConverter {
         User user = new User();
         user.setUsername(userDTO.getName());
         user.setSurname(userDTO.getSurname());
+        user.setLogin(userDTO.getLogin());
+        user.setRoles(userDTO.getRoles());
+        user.setPassword(userDTO.getPassword());
+
         if (userDTO.getCertificates().size() != 0) {
             Order order = getOrder(userDTO.getCertificates());
             user.addOrder(order);
@@ -84,8 +88,9 @@ public class UserConverter {
         UserInfoResponseDto userResponseDTO = new UserInfoResponseDto();
         userResponseDTO.setUserId(user.getUserId());
         userResponseDTO.setUsername(user.getUsername());
-
-
+        userResponseDTO.setLogin(user.getLogin());
+        userResponseDTO.setRoles(user.getRoles());
+        userResponseDTO.setPassword(user.getPassword());
         userResponseDTO.setSurname(user.getSurname());
         return userResponseDTO;
     }

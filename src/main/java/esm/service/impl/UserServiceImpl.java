@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserInfoResponseDto create(UserRequestDto user) {
 
-        if(userRepository.findByLogin(user.getLogin())==null){
+        if(userRepository.findByLogin(user.getLogin())!=null){
             throw new BadRequestException("Login is used",ErrorCode.BAD_REQUEST_ERROR);
 
         }
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService{
             }
             user.setCertificates(result);
         }
-        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
+
 
 
         return converter.convertOneToInfoDTO((userRepository.save(converter.convertDTOtoModel(user))));

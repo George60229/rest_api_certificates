@@ -33,6 +33,7 @@ public class User extends RepresentationModel<User> implements UserDetails {
 
     String password;
 
+
     @ManyToMany(cascade = CascadeType.PERSIST)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "user_role",
