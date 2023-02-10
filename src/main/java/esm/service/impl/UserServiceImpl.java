@@ -7,8 +7,10 @@ import esm.dto.request.UserRequestDto;
 import esm.dto.response.UserInfoResponseDto;
 import esm.dto.response.UserResponseDto;
 import esm.exception.AppNotFoundException;
+import esm.exception.BadRequestException;
 import esm.exception.ErrorCode;
 import esm.model.GiftCertificate;
+import esm.model.Role;
 import esm.model.User;
 import esm.repository.CertificateRepository;
 import esm.repository.UserRepository;
@@ -16,12 +18,15 @@ import esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
 
     private final CertificateRepository certificateRepository;
@@ -53,6 +58,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfoResponseDto create(UserRequestDto user) {
 
+        if(userRepository.findByLogin(user.getLogin())==null){
+            throw new BadRequestException("Login is used",ErrorCode.BAD_REQUEST_ERROR);
+
+        }
+
         if (!user.getCertificates().isEmpty()) {
             List<GiftCertificate> result = new ArrayList<>();
             for (int i = 0; i < user.getCertificates().size(); i++) {
@@ -63,6 +73,8 @@ public class UserServiceImpl implements UserService {
             }
             user.setCertificates(result);
         }
+        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
+
 
         return converter.convertOneToInfoDTO((userRepository.save(converter.convertDTOtoModel(user))));
     }
@@ -127,4 +139,15 @@ public class UserServiceImpl implements UserService {
     }
 
 
+
+    @Override
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        User user = userRepository.findByLogin(login);
+
+        if (user == null) {
+            throw new AppNotFoundException("Username is not found",ErrorCode.USER_NOT_FOUND);
+        }
+
+        return user;
+    }
 }

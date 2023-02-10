@@ -6,10 +6,14 @@ import esm.dto.request.BuyCertificatesRequestDTO;
 import esm.dto.request.UserRequestDto;
 import esm.dto.response.UserInfoResponseDto;
 import esm.dto.response.UserResponseDto;
+import esm.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserService {
+public interface UserService extends  UserDetailsService {
+
+
 
 
     UserResponseDto getUserOrders(int id);

@@ -42,7 +42,7 @@ public class CertificateServiceImplTest {
         GiftCertificate giftCertificate = new GiftCertificate();
         giftCertificate.setName("Hello");
         giftCertificate.setDescription("WOW");
-        giftCertificate.setId(5);
+        giftCertificate.setCertificateId(5);
 
         CertificateFindByRequestDTO certificateFindByRequestDTO = new CertificateFindByRequestDTO();
 
