@@ -36,7 +36,7 @@ public class CertificateController {
         this.certificateServiceBean = certificateServiceBean;
     }
 
-
+    @RolesAllowed({"USER","ADMIN"})
     @GetMapping("/{id}")
     public CollectionModel<ResponseCertificateDTO> getCertificateById(@PathVariable(value = "id") int id) {
         List<ResponseCertificateDTO> list = new ArrayList<>();
@@ -50,7 +50,7 @@ public class CertificateController {
 
     }
 
-
+    @RolesAllowed({"ADMIN"})
     @PostMapping("/addCertificate")
     public CollectionModel<ResponseCertificateDTO> addCertificate(@RequestBody CertificateRequestDTO giftCertificate) {
         List<ResponseCertificateDTO> list = new ArrayList<>();
@@ -63,7 +63,7 @@ public class CertificateController {
 
     }
 
-
+    @RolesAllowed({"USER","ADMIN"})
     @GetMapping("/getAllCertificates")
     public CollectionModel<ResponseCertificateDTO> getAllCertificatesWithPage(@RequestBody CertificateFindByRequestDTO
                                                                                       certificateFindByRequestDTO) {
@@ -77,7 +77,7 @@ public class CertificateController {
         return CollectionModel.of(list, links);
     }
 
-
+    @RolesAllowed({"ADMIN"})
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteCertificateById(@PathVariable(value = "id") Integer id) {
@@ -86,6 +86,7 @@ public class CertificateController {
 
 
     @PutMapping("/{id}")
+    @RolesAllowed({"ADMIN"})
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<ResponseCertificateDTO> editById(@RequestBody CertificateRequestDTO certificateRequestDTO, @PathVariable(value = "id") int id) {
         List<ResponseCertificateDTO> list = new ArrayList<>();
@@ -97,6 +98,7 @@ public class CertificateController {
         return CollectionModel.of(list, links);
     }
 
+    @RolesAllowed({"USER","ADMIN"})
     @GetMapping("/findByTag/{name}")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<ResponseCertificateDTO> findByTag(@PathVariable(value = "name") String name,
@@ -112,7 +114,7 @@ public class CertificateController {
 
         return CollectionModel.of(list, links);
     }
-
+    @RolesAllowed({"ADMIN"})
     @PutMapping("/editOneField")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<ResponseCertificateDTO> editCertificateByParameter(@RequestBody CertificateEditRequestDto certificateEditRequestDto) {
@@ -123,7 +125,7 @@ public class CertificateController {
         return CollectionModel.of(list, links);
 
     }
-
+    @RolesAllowed({"ADMIN"})
     @GetMapping("/findByTags")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<ResponseCertificateDTO> findByTagList(@RequestBody FindByTagRequestDto tagNames) {
@@ -136,7 +138,7 @@ public class CertificateController {
 
         return CollectionModel.of(list, links);
     }
-
+    @RolesAllowed({"ADMIN"})
     @GetMapping("/findPopularTag")
     public CollectionModel<TagResponseDTO> popularTag() {
         List<TagResponseDTO> list = new ArrayList<>();

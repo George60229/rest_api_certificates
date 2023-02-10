@@ -33,7 +33,7 @@ public class TagController {
     public TagController(TagServiceImpl tagServiceBean) {
         this.tagServiceImpl = tagServiceBean;
     }
-
+    @RolesAllowed({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping("/getTagById/{id}")
     public CollectionModel<TagResponseDTO> getTagByID(@PathVariable(value = "id") int id) {
         List<TagResponseDTO> list = new ArrayList<>();
@@ -46,7 +46,7 @@ public class TagController {
 
         return CollectionModel.of(list, links);
     }
-
+    @RolesAllowed({"ROLE_ADMIN"})
 
     @PostMapping("/addTag")
     public CollectionModel<TagResponseDTO> addTag(@RequestBody TagRequestDTO tag) {
@@ -61,7 +61,7 @@ public class TagController {
 
         return CollectionModel.of(list, links);
     }
-
+    @RolesAllowed({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping("/getAllTags")
     public CollectionModel<TagResponseDTO> getAllTags(@PageableDefault Pageable pageable) {
 
@@ -74,7 +74,7 @@ public class TagController {
 
         return CollectionModel.of(tags, links);
     }
-
+    @RolesAllowed({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping("/getAllTags/{page}")
     public CollectionModel<TagResponseDTO> getAllTagsWithPage(@PathVariable(value = "page") int page) {
         if (page <= 0) {
@@ -87,6 +87,7 @@ public class TagController {
 
         return CollectionModel.of(list, links);
     }
+    @RolesAllowed({"ROLE_ADMIN"})
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)

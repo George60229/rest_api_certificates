@@ -34,7 +34,7 @@ public class User extends RepresentationModel<User> implements UserDetails {
     String password;
 
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "user_role",
             joinColumns = {@JoinColumn(name = "user_id")},

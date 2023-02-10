@@ -1,7 +1,6 @@
 package esm.repository;
 
 
-import esm.model.Role;
 import esm.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,8 +14,8 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Integer> {
     @Modifying
     @Transactional
-    @Query(nativeQuery = true, value = "insert into user_role values (?1,1)")
-    void addRole(int userId);
+    @Query(nativeQuery = true, value = "insert into user_role values (?1,?1)")
+    void addRole(int userId,int roleId);
     User findByLogin(String login);
 
 

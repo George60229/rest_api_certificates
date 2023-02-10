@@ -10,7 +10,6 @@ import esm.exception.AppNotFoundException;
 import esm.exception.BadRequestException;
 import esm.exception.ErrorCode;
 import esm.model.GiftCertificate;
-import esm.model.Role;
 import esm.model.User;
 import esm.repository.CertificateRepository;
 import esm.repository.RoleRepository;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -35,14 +33,27 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserConverter converter;
-    private final RoleRepository roleRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
 
-    public UserServiceImpl(UserRepository userRepository, CertificateRepository certificateRepository,
-                           RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, CertificateRepository certificateRepository) {
         this.userRepository = userRepository;
         this.certificateRepository = certificateRepository;
-        this.roleRepository = roleRepository;
+        this.roleRepository=roleRepository;
+
+    }
+
+    @Override
+    public UserInfoResponseDto confirmUser(int id) {
+
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new AppNotFoundException("User in cant be confirmed", ErrorCode.USER_NOT_FOUND);
+        }
+        User myUser = user.get();
+        myUser.setRoles(Collections.singletonList(roleRepository.findByName("USER")));
+        return converter.convertOneToInfoDTO(userRepository.save(myUser));
     }
 
     @Override

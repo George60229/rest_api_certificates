@@ -3,13 +3,14 @@ package esm.converter;
 import esm.dto.request.UserRequestDto;
 import esm.dto.response.UserInfoResponseDto;
 import esm.dto.response.UserResponseDto;
-import esm.model.*;
+import esm.model.GiftCertificate;
+import esm.model.Order;
+import esm.model.User;
 import esm.repository.RoleRepository;
 import esm.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -59,6 +60,7 @@ public class UserConverter {
         user.setSurname(userDTO.getSurname());
         user.setLogin(userDTO.getLogin());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setRoles(Collections.singletonList(roleRepository.findByName("GUEST")));
 
 
         if (userDTO.getCertificates().size() != 0) {
@@ -102,9 +104,8 @@ public class UserConverter {
         userResponseDTO.setUserId(user.getUserId());
         userResponseDTO.setUsername(user.getUsername());
         userResponseDTO.setLogin(user.getLogin());
-        userResponseDTO.setRoles(Collections.singletonList(roleRepository.findByName("ROLE_GUEST")));
+        userResponseDTO.setRoles(user.getRoles());
         userResponseDTO.setSurname(user.getSurname());
-        userRepository.addRole(userResponseDTO.getUserId());
         return userResponseDTO;
     }
 

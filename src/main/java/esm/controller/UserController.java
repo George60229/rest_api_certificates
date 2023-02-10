@@ -20,6 +20,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class UserController {
     }
 
 
+
     @PostMapping("/addUser")
     public CollectionModel<UserInfoResponseDto> addUser(@RequestBody UserRequestDto user) {
         List<UserInfoResponseDto> list = new ArrayList<>();
@@ -52,7 +54,7 @@ public class UserController {
 
     }
 
-
+    @RolesAllowed({"USER","ADMIN"})
     @GetMapping("/getAllUsers/{page}")
     public CollectionModel<UserInfoResponseDto> getAllUsersWithPage(@PathVariable(value = "page") int page) {
         if (page < 0) {
@@ -68,7 +70,7 @@ public class UserController {
         return CollectionModel.of(list, links);
     }
 
-
+    @RolesAllowed({"USER","ADMIN"})
     @GetMapping("/getAllUsers")
     public CollectionModel<UserInfoResponseDto> getAllUsers(@PageableDefault Pageable pageable) {
 
@@ -83,6 +85,7 @@ public class UserController {
 
     }
 
+    @RolesAllowed({"USER","ADMIN"})
     @PostMapping("/buyCertificate/{id}")
     public CollectionModel<UserResponseDto> buyCertificate(@RequestBody BuyCertificatesRequestDTO certificates,
                                                            @PathVariable(value = "id") int id) {
@@ -106,6 +109,7 @@ public class UserController {
     }
 
     @GetMapping("/orders/{id}")
+    @RolesAllowed({"USER","ADMIN"})
     public CollectionModel<UserResponseDto> getOrdersById(@PathVariable(value = "id") int id) {
         List<UserResponseDto> list = new ArrayList<>();
 
@@ -121,6 +125,7 @@ public class UserController {
     }
 
     @GetMapping("/orders/{id}/{order_id}")
+    @RolesAllowed({"USER","ADMIN"})
     public CollectionModel<Order> getOrderById(@PathVariable(value = "id") int id, @PathVariable
             (value = "order_id") int orderId) {
 
@@ -145,8 +150,9 @@ public class UserController {
 
     }
 
-
+    @RolesAllowed({"USER","ADMIN"})
     @GetMapping("/{id}")
+
     public CollectionModel<UserInfoResponseDto> getById(@PathVariable(value = "id") int id) {
         List<UserInfoResponseDto> list = new ArrayList<>();
 
@@ -162,7 +168,9 @@ public class UserController {
     }
 
 
+
     @GetMapping("/richUser")
+    @RolesAllowed({"ADMIN"})
     public CollectionModel<UserResponseDto> getRichUser() {
 
 
@@ -174,6 +182,13 @@ public class UserController {
         links.add(userUrlCreator.getAllUsers());
         links.add(userUrlCreator.getRichUser());
         return CollectionModel.of(list, links);
+
+    }
+
+    @RolesAllowed("ADMIN")
+    @PutMapping("/confirm/{id}")
+    public UserInfoResponseDto confirmUser(@PathVariable int id){
+        return userService.confirmUser(id);
 
     }
 
