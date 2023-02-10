@@ -9,6 +9,7 @@ import java.util.Set;
 
 public class UserResponseDto {
     private int userId;
+
     public String getLogin() {
         return login;
     }
@@ -17,15 +18,16 @@ public class UserResponseDto {
         this.login = login;
     }
 
-    private Set<Role> roles;
+    private List<Role> roles;
 
-    public Set<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
+
     String login;
     private String name;
 

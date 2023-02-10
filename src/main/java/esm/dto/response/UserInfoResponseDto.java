@@ -13,6 +13,8 @@ public class UserInfoResponseDto {
     String surname;
 
 
+
+
     public String getLogin() {
         return login;
     }

@@ -18,6 +18,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +61,7 @@ public class CertificateController {
 
     }
 
+    @RolesAllowed("ADMIN")
     @GetMapping("/getAllCertificates")
     public CollectionModel<ResponseCertificateDTO> getAllCertificatesWithPage(@RequestBody CertificateFindByRequestDTO
                                                                                       certificateFindByRequestDTO) {

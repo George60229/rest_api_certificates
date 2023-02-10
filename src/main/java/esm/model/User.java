@@ -31,11 +31,22 @@ public class User extends RepresentationModel<User> implements UserDetails {
     String email;
 
 
-
     String password;
 
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(name = "user_role",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")})
+    List<Role> roles = new ArrayList<>();
 
+    public List<Role> getRoles() {
+        return roles;
+    }
 
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
 
     public String getLogin() {
         return login;
@@ -62,6 +73,7 @@ public class User extends RepresentationModel<User> implements UserDetails {
     public void setEmail(String email) {
         this.email = email;
     }
+
     public Integer getUserId() {
         return userId;
     }

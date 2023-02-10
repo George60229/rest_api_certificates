@@ -20,6 +20,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,8 +69,7 @@ public class UserController {
 
         return CollectionModel.of(list, links);
     }
-
-
+    @RolesAllowed("ADMIN")
     @GetMapping("/getAllUsers")
     public CollectionModel<UserInfoResponseDto> getAllUsers(@PageableDefault Pageable pageable) {
 

@@ -37,6 +37,7 @@ public class UserConverter {
         userResponseDTO.setUserId(user.getUserId());
         userResponseDTO.setName(user.getUsername());
         userResponseDTO.setOrders(user.getOrders());
+        userResponseDTO.setRoles(user.getRoles());
         return userResponseDTO;
     }
 
@@ -83,6 +84,7 @@ public class UserConverter {
         UserInfoResponseDto userResponseDTO = new UserInfoResponseDto();
         userResponseDTO.setUserId(user.getUserId());
         userResponseDTO.setUsername(user.getUsername());
+
 
         userResponseDTO.setSurname(user.getSurname());
         return userResponseDTO;
