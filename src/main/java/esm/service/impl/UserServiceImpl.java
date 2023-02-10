@@ -13,6 +13,7 @@ import esm.model.GiftCertificate;
 import esm.model.Role;
 import esm.model.User;
 import esm.repository.CertificateRepository;
+import esm.repository.RoleRepository;
 import esm.repository.UserRepository;
 import esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     private final CertificateRepository certificateRepository;
@@ -34,11 +35,14 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserConverter converter;
+    private final RoleRepository roleRepository;
 
 
-    public UserServiceImpl(UserRepository userRepository, CertificateRepository certificateRepository) {
+    public UserServiceImpl(UserRepository userRepository, CertificateRepository certificateRepository,
+                           RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.certificateRepository = certificateRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -58,8 +62,8 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserInfoResponseDto create(UserRequestDto user) {
 
-        if(userRepository.findByLogin(user.getLogin())!=null){
-            throw new BadRequestException("Login is used",ErrorCode.BAD_REQUEST_ERROR);
+        if (userRepository.findByLogin(user.getLogin()) != null) {
+            throw new BadRequestException("Login is used", ErrorCode.BAD_REQUEST_ERROR);
 
         }
 
@@ -73,7 +77,6 @@ public class UserServiceImpl implements UserService{
             }
             user.setCertificates(result);
         }
-
 
 
         return converter.convertOneToInfoDTO((userRepository.save(converter.convertDTOtoModel(user))));
@@ -139,13 +142,12 @@ public class UserServiceImpl implements UserService{
     }
 
 
-
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = userRepository.findByLogin(login);
 
         if (user == null) {
-            throw new AppNotFoundException("Username is not found",ErrorCode.USER_NOT_FOUND);
+            throw new AppNotFoundException("Username is not found", ErrorCode.USER_NOT_FOUND);
         }
 
         return user;

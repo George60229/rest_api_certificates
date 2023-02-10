@@ -13,15 +13,6 @@ public class UserInfoResponseDto {
 
     String surname;
 
-    String password;
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public String getLogin() {
         return login;
@@ -40,6 +31,7 @@ public class UserInfoResponseDto {
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
+
     String login;
 
 
@@ -66,7 +58,6 @@ public class UserInfoResponseDto {
     public void setSurname(String surname) {
         this.surname = surname;
     }
-
 
 
 }

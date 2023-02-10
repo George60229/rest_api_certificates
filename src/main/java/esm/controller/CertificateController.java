@@ -51,7 +51,6 @@ public class CertificateController {
     }
 
 
-
     @PostMapping("/addCertificate")
     public CollectionModel<ResponseCertificateDTO> addCertificate(@RequestBody CertificateRequestDTO giftCertificate) {
         List<ResponseCertificateDTO> list = new ArrayList<>();
@@ -119,7 +118,6 @@ public class CertificateController {
     public CollectionModel<ResponseCertificateDTO> editCertificateByParameter(@RequestBody CertificateEditRequestDto certificateEditRequestDto) {
         List<ResponseCertificateDTO> list = new ArrayList<>();
         list.add(certificateServiceBean.editOneField(certificateEditRequestDto));
-
         List<Link> links = new ArrayList<>();
         links.add(certificateUrlCreator.findPopularTag());
         return CollectionModel.of(list, links);

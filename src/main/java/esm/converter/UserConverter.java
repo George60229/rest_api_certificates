@@ -3,20 +3,32 @@ package esm.converter;
 import esm.dto.request.UserRequestDto;
 import esm.dto.response.UserInfoResponseDto;
 import esm.dto.response.UserResponseDto;
-import esm.model.GiftCertificate;
-import esm.model.Order;
-import esm.model.User;
+import esm.model.*;
+import esm.repository.RoleRepository;
+import esm.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class UserConverter {
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    RoleRepository roleRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public Page<UserResponseDto> convert(Page<User> users) {
         return listToPage(users.stream()
@@ -46,13 +58,14 @@ public class UserConverter {
         user.setUsername(userDTO.getName());
         user.setSurname(userDTO.getSurname());
         user.setLogin(userDTO.getLogin());
-        user.setRoles(userDTO.getRoles());
-        user.setPassword(userDTO.getPassword());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
 
         if (userDTO.getCertificates().size() != 0) {
             Order order = getOrder(userDTO.getCertificates());
             user.addOrder(order);
         }
+
 
         return user;
     }
@@ -89,9 +102,9 @@ public class UserConverter {
         userResponseDTO.setUserId(user.getUserId());
         userResponseDTO.setUsername(user.getUsername());
         userResponseDTO.setLogin(user.getLogin());
-        userResponseDTO.setRoles(user.getRoles());
-        userResponseDTO.setPassword(user.getPassword());
+        userResponseDTO.setRoles(Collections.singletonList(roleRepository.findByName("ROLE_GUEST")));
         userResponseDTO.setSurname(user.getSurname());
+        userRepository.addRole(userResponseDTO.getUserId());
         return userResponseDTO;
     }
 

@@ -12,6 +12,7 @@ public class UserRequestDto {
     String surname;
 
     String password;
+
     public String getLogin() {
         return login;
     }
@@ -20,15 +21,6 @@ public class UserRequestDto {
         this.login = login;
     }
 
-    private List<Role> roles;
-
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
     String login;
 
     List<GiftCertificate> certificates = new ArrayList<>();

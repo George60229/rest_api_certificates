@@ -14,7 +14,7 @@ import java.util.List;
 public class Role implements GrantedAuthority {
     @Id
     private Long roleId;
-    
+
     private String name;
     @JsonIgnore
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -22,18 +22,17 @@ public class Role implements GrantedAuthority {
     @JoinTable(name = "user_role",
             joinColumns = {@JoinColumn(name = "role_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")})
-    private List<GiftCertificate> users = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
-    public List<GiftCertificate> getUsers() {
+    public List<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<GiftCertificate> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 
-    public Role(long l, String roleUser) {
-        roleId = l;
+    public Role(String roleUser) {
         name = roleUser;
     }
 

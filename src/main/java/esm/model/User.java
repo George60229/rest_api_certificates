@@ -41,6 +41,7 @@ public class User extends RepresentationModel<User> implements UserDetails {
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
     List<Role> roles = new ArrayList<>();
 
+
     public List<Role> getRoles() {
         return roles;
     }

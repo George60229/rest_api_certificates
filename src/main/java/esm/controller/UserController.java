@@ -43,7 +43,6 @@ public class UserController {
         List<UserInfoResponseDto> list = new ArrayList<>();
         UserInfoResponseDto userResponseDto = userService.create(user);
         list.add(userResponseDto);
-
         List<Link> links = new ArrayList<>();
         links.add(userUrlCreator.getAllUsers());
         links.add(userUrlCreator.getRichUser());
